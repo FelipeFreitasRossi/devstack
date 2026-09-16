@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { SlothMascot } from '../auth/SlothMascot';
+import { useAuthTransition } from '../../contexts/AuthTransitionContext';
 
 const LOGO_URL = 'https://i.postimg.cc/X7RLxfVm/3.png';
 
@@ -21,7 +22,7 @@ export function AuthLayout({
   subtitle,
   mascotSide = 'right',
 }: AuthLayoutProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const { containerRef, direction } = useAuthTransition();
   const glowRef = useRef<HTMLDivElement>(null);
   const mascotRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -30,29 +31,36 @@ export function AuthLayout({
 
   useGSAP(
     () => {
-      const tl = gsap.timeline();
+      if (!containerRef.current) return;
 
-      // 1. Glow âmbar cresce vindo da direita
+      const enterX = direction === 'from-left' ? -320 : 320;
+
+      gsap.fromTo(
+        containerRef.current,
+        { x: enterX, opacity: 0 },
+        {
+          x: 0,
+          opacity: 1,
+          duration: 0.55,
+          ease: 'power2.out',
+        }
+      );
+
+      const tl = gsap.timeline({ delay: 0.15 });
+
       tl.fromTo(
         glowRef.current,
         { opacity: 0, x: 80 },
         { opacity: 1, x: 0, duration: 1.4, ease: 'power3.out' }
       );
 
-      // 2. Mascote entra deslizando pela lateral
       tl.fromTo(
         mascotRef.current,
         { opacity: 0, x: isLeft ? -80 : 80 },
-        {
-          opacity: 1,
-          x: 0,
-          duration: 1,
-          ease: 'power3.out',
-        },
+        { opacity: 1, x: 0, duration: 1, ease: 'power3.out' },
         '-=1.2'
       );
 
-      // 3. Card entra de baixo
       tl.fromTo(
         cardRef.current,
         { opacity: 0, y: 24 },
@@ -60,13 +68,13 @@ export function AuthLayout({
         '-=0.6'
       );
     },
-    { scope: containerRef }
+    { scope: containerRef, dependencies: [direction] }
   );
 
   return (
     <div
       ref={containerRef}
-      className="min-h-screen flex flex-col bg-[#050506] relative overflow-hidden"
+      className="h-[100dvh] w-screen flex flex-col bg-[#050506] relative overflow-hidden"
     >
       {/* ===== GLOW ÂMBAR FORTE — canto direito ===== */}
       <div
@@ -136,28 +144,24 @@ export function AuthLayout({
           isLeft ? 'left-0 -translate-x-[30px]' : 'right-0 translate-x-[30px]'
         }`}
       >
-        {/* Wrapper que recebe a animação GSAP */}
         <div ref={mascotRef} className="opacity-0">
-          {/* Wrapper que aplica o flip horizontal no modo 'left' */}
           <div
             style={{
               transform: isLeft ? 'scaleX(-1)' : 'none',
             }}
           >
-            {/* Desktop — TAMANHO AUMENTADO */}
             <div className="hidden sm:block">
               <SlothMascot size={280} anchor="bottom" />
             </div>
-            {/* Mobile — mantém pequeno */}
             <div className="sm:hidden">
-              <SlothMascot size={130} anchor="bottom" />
+              <SlothMascot size={150} anchor="bottom" />
             </div>
           </div>
         </div>
       </div>
 
       {/* ===== HEADER ===== */}
-      <header className="relative z-10 p-5 sm:p-6">
+      <header className="relative z-10 p-4 sm:p-6 shrink-0">
         <Link
           to="/"
           className="inline-flex items-center gap-2.5 group"
@@ -165,30 +169,32 @@ export function AuthLayout({
           <img
             src={LOGO_URL}
             alt="Devstack"
-            className="h-8 md:h-9 w-auto object-contain transition-transform group-hover:scale-105"
+            className="h-7 sm:h-8 md:h-9 w-auto object-contain transition-transform group-hover:scale-105"
           />
-          <span className="text-lg md:text-xl font-bold text-text-primary tracking-tight">
+          <span className="text-base sm:text-lg md:text-xl font-bold text-text-primary tracking-tight">
             Dev<span className="text-brand-500">stack</span>
           </span>
         </Link>
       </header>
 
-      {/* ===== CONTEÚDO ===== */}
-      <main className="relative z-10 flex-1 flex items-center justify-center px-4 pb-12">
+      {/* ===== CONTEÚDO (centralizado, sem scroll) ===== */}
+      <main className="relative z-10 flex-1 flex items-center justify-center px-4 pb-4 sm:pb-8 min-h-0">
         <div className="w-full max-w-md">
           <div ref={cardRef} className="opacity-0">
             {/* Título */}
-            <div className="text-center mb-6 sm:mb-8">
-              <h1 className="text-2xl sm:text-3xl font-bold text-text-primary mb-2 tracking-tight">
+            <div className="text-center mb-4 sm:mb-6 md:mb-8">
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-text-primary mb-1 sm:mb-2 tracking-tight">
                 {title}
               </h1>
               {subtitle && (
-                <p className="text-text-secondary text-sm">{subtitle}</p>
+                <p className="text-text-secondary text-xs sm:text-sm">
+                  {subtitle}
+                </p>
               )}
             </div>
 
             {/* Card com glow interno */}
-            <div className="relative bg-[#0c0c0e] border border-border rounded-2xl p-5 sm:p-6 md:p-8 overflow-hidden shadow-2xl shadow-black/40">
+            <div className="relative bg-[#0c0c0e] border border-border rounded-2xl p-4 sm:p-6 md:p-8 overflow-hidden shadow-2xl shadow-black/40">
               <div
                 aria-hidden
                 className="absolute inset-0 pointer-events-none"

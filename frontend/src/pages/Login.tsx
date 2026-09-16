@@ -1,14 +1,16 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { AuthLayout } from '../components/layout/AuthLayout';
 import { Input } from '../components/ui/Input';
 import { Button } from '../components/ui/Button';
 import { useAuth } from '../contexts/AuthContext';
+import { useAuthTransition } from '../contexts/AuthTransitionContext';
 
 export function Login() {
   const navigate = useNavigate();
   const { login } = useAuth();
+  const { goToCadastro } = useAuthTransition();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -72,12 +74,13 @@ export function Login() {
 
         <p className="text-center text-sm text-text-secondary">
           Não tem conta?{' '}
-          <Link
-            to="/cadastro"
-            className="text-brand-500 hover:text-brand-400 font-medium"
+          <button
+            type="button"
+            onClick={goToCadastro}
+            className="text-brand-500 hover:text-brand-400 font-medium underline-offset-4 hover:underline transition-all"
           >
             Cadastre-se
-          </Link>
+          </button>
         </p>
       </form>
     </AuthLayout>

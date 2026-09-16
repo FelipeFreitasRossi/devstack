@@ -1,14 +1,16 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { AuthLayout } from '../components/layout/AuthLayout';
 import { Input } from '../components/ui/Input';
 import { Button } from '../components/ui/Button';
 import { useAuth } from '../contexts/AuthContext';
+import { useAuthTransition } from '../contexts/AuthTransitionContext';
 
 export function Cadastro() {
   const navigate = useNavigate();
   const { register } = useAuth();
+  const { goToLogin } = useAuthTransition();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -105,12 +107,13 @@ export function Cadastro() {
 
         <p className="text-center text-sm text-text-secondary">
           Já tem conta?{' '}
-          <Link
-            to="/login"
-            className="text-brand-500 hover:text-brand-400 font-medium"
+          <button
+            type="button"
+            onClick={goToLogin}
+            className="text-brand-500 hover:text-brand-400 font-medium underline-offset-4 hover:underline transition-all"
           >
             Entre
-          </Link>
+          </button>
         </p>
       </form>
     </AuthLayout>

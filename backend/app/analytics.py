@@ -5,6 +5,16 @@ from app.database import (
     daily_activity_collection,
 )
 
+# ============================================================================
+# 🚧 MODO LIVRE (DESENVOLVIMENTO)
+# ============================================================================
+# True  → todos os módulos ficam desbloqueados (para desenvolver/testar)
+# False → volta ao modo trilha (desbloqueio sequencial)
+#
+# ⚠️ ANTES DE IR PARA PRODUÇÃO: mude para False
+# ============================================================================
+FREE_MODE = True
+
 CURRICULUM = [
     {
         "id": "01",
@@ -31,17 +41,17 @@ CURRICULUM = [
         "description": "Sintaxe, entrada/saída e estruturas básicas",
         "duration_hours": 10,
         "lessons": [
-            {"id": "02-01", "title": "Instalando Python e o VSCode", "reading_time_minutes": 10, "has_exercise": False},
-            {"id": "02-02", "title": "Primeiro programa: print()", "reading_time_minutes": 8, "has_exercise": True},
-            {"id": "02-03", "title": "Variáveis e tipos em Python", "reading_time_minutes": 12, "has_exercise": True},
+            {"id": "02-01", "title": "Instalando Python e o VS Code", "reading_time_minutes": 14, "has_exercise": True},
+            {"id": "02-02", "title": "Primeiro programa: print()", "reading_time_minutes": 12, "has_exercise": True},
+            {"id": "02-03", "title": "Variáveis e Tipos em Python", "reading_time_minutes": 12, "has_exercise": True},
             {"id": "02-04", "title": "Entrada de dados: input()", "reading_time_minutes": 10, "has_exercise": True},
-            {"id": "02-05", "title": "Conversão de tipos (int, float, str)", "reading_time_minutes": 12, "has_exercise": True},
-            {"id": "02-06", "title": "Strings: métodos principais", "reading_time_minutes": 14, "has_exercise": True},
-            {"id": "02-07", "title": "Listas, tuplas e sets", "reading_time_minutes": 15, "has_exercise": True},
+            {"id": "02-05", "title": "Conversão de Tipos", "reading_time_minutes": 12, "has_exercise": True},
+            {"id": "02-06", "title": "Strings: Métodos Principais", "reading_time_minutes": 14, "has_exercise": True},
+            {"id": "02-07", "title": "Listas, Tuplas e Sets", "reading_time_minutes": 16, "has_exercise": True},
             {"id": "02-08", "title": "Dicionários em Python", "reading_time_minutes": 12, "has_exercise": True},
-            {"id": "02-09", "title": "Condicionais em Python", "reading_time_minutes": 10, "has_exercise": True},
+            {"id": "02-09", "title": "Condicionais em Python", "reading_time_minutes": 14, "has_exercise": True},
             {"id": "02-10", "title": "Loops em Python", "reading_time_minutes": 14, "has_exercise": True},
-            {"id": "02-11", "title": "Projeto: Sistema de cadastro", "reading_time_minutes": 25, "has_exercise": True},
+            {"id": "02-11", "title": "Projeto: Sistema de Cadastro", "reading_time_minutes": 25, "has_exercise": True},
         ],
     },
     {
@@ -50,15 +60,15 @@ CURRICULUM = [
         "description": "Funções avançadas, POO, módulos e arquivos",
         "duration_hours": 12,
         "lessons": [
-            {"id": "03-01", "title": "Funções com parâmetros e retorno", "reading_time_minutes": 14, "has_exercise": True},
-            {"id": "03-02", "title": "Argumentos opcionais e nomeados", "reading_time_minutes": 12, "has_exercise": True},
+            {"id": "03-01", "title": "Funções com Parâmetros e Retorno", "reading_time_minutes": 14, "has_exercise": True},
+            {"id": "03-02", "title": "Argumentos Opcionais e Nomeados", "reading_time_minutes": 12, "has_exercise": True},
             {"id": "03-03", "title": "*args e **kwargs", "reading_time_minutes": 12, "has_exercise": True},
-            {"id": "03-04", "title": "Funções lambda", "reading_time_minutes": 10, "has_exercise": True},
-            {"id": "03-05", "title": "List comprehensions", "reading_time_minutes": 14, "has_exercise": True},
-            {"id": "03-06", "title": "Tratamento de erros (try/except)", "reading_time_minutes": 15, "has_exercise": True},
-            {"id": "03-07", "title": "Módulos, pacotes e pip", "reading_time_minutes": 12, "has_exercise": True},
-            {"id": "03-08", "title": "Ambientes virtuais (venv)", "reading_time_minutes": 10, "has_exercise": False},
-            {"id": "03-09", "title": "Manipulação de arquivos e JSON", "reading_time_minutes": 15, "has_exercise": True},
+            {"id": "03-04", "title": "Funções Lambda", "reading_time_minutes": 10, "has_exercise": True},
+            {"id": "03-05", "title": "List Comprehensions", "reading_time_minutes": 14, "has_exercise": True},
+            {"id": "03-06", "title": "Tratamento de Erros (try/except)", "reading_time_minutes": 15, "has_exercise": True},
+            {"id": "03-07", "title": "Módulos, Pacotes e pip", "reading_time_minutes": 12, "has_exercise": True},
+            {"id": "03-08", "title": "Ambientes Virtuais (venv)", "reading_time_minutes": 10, "has_exercise": False},
+            {"id": "03-09", "title": "Manipulação de Arquivos e JSON", "reading_time_minutes": 15, "has_exercise": True},
             {"id": "03-10", "title": "Programação Orientada a Objetos (POO)", "reading_time_minutes": 18, "has_exercise": True},
         ],
     },
@@ -286,19 +296,20 @@ def calculate_total_hours(user_id: str) -> float:
 
 def _is_module_unlocked(user_id: str, module_index: int) -> bool:
     """
-    Verifica se um módulo está desbloqueado para o aluno.
+    Verifica se um módulo está desbloqueado.
     
-    Regra: um módulo só desbloqueia se TODOS os módulos anteriores
-    estiverem 100% concluídos.
-    
-    - Módulo 01 (índice 0) sempre desbloqueado.
-    - Módulo 02 (índice 1) desbloqueia quando módulo 01 estiver completo.
-    - E assim por diante.
+    - MODO LIVRE (FREE_MODE=True): todos os módulos ficam desbloqueados.
+    - MODO TRILHA (FREE_MODE=False): desbloqueio sequencial (só desbloqueia
+      quando TODOS os módulos anteriores estiverem concluídos).
     """
+    # 🚧 Modo livre — todos os módulos liberados
+    if FREE_MODE:
+        return True
+
+    # Modo trilha — desbloqueio sequencial
     if module_index == 0:
         return True
 
-    # Verifica todos os módulos anteriores
     for i in range(module_index):
         previous_module = CURRICULUM[i]
         prev_total = len(previous_module["lessons"])
@@ -328,7 +339,6 @@ def calculate_module_progress(
 
     percent = round((completed / total) * 100) if total > 0 else 0
 
-    # Verifica se está desbloqueado (regra sequencial)
     unlocked = _is_module_unlocked(user_id, module_index)
 
     if not unlocked:
@@ -353,7 +363,6 @@ def calculate_module_progress(
 
 def get_next_lesson(user_id: str) -> dict | None:
     for module_index, module in enumerate(CURRICULUM):
-        # Só procura próxima aula em módulos desbloqueados
         if not _is_module_unlocked(user_id, module_index):
             break
 
@@ -452,7 +461,6 @@ def get_all_achievements(user_id: str) -> list[dict]:
 
 
 def get_all_modules_with_progress(user_id: str) -> list[dict]:
-    """Retorna todos os módulos com progresso (respeitando a regra sequencial)."""
     result = []
     for index, module in enumerate(CURRICULUM):
         result.append(calculate_module_progress(user_id, module, index))
@@ -484,7 +492,6 @@ def get_weekly_activity(user_id: str) -> list[dict]:
 
 
 def get_time_distribution(user_id: str) -> list[dict]:
-    """Retorna o tempo total de estudo por módulo."""
     pipeline = [
         {"$match": {"user_id": user_id}},
         {
@@ -512,7 +519,6 @@ def get_time_distribution(user_id: str) -> list[dict]:
 
 
 def get_timeline(user_id: str, limit: int = 10) -> list[dict]:
-    """Retorna as últimas aulas concluídas (mais recentes primeiro)."""
     entries = list(
         progress_collection.find({
             "user_id": user_id,
@@ -552,7 +558,6 @@ def get_timeline(user_id: str, limit: int = 10) -> list[dict]:
 
 
 def get_lesson_sidebar(user_id: str, current_lesson_id: str) -> list[dict]:
-    """Monta a árvore módulo > lição com o status de cada uma."""
     completed_lesson_ids = {
         p["lesson_id"]
         for p in progress_collection.find({"user_id": user_id, "completed": True})
