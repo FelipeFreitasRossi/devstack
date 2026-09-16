@@ -27,18 +27,21 @@ BLOCKED_MODULES = {
     "inspect", "gc", "tracemalloc", "sysconfig", "platform",
 }
 
+# `input` NÃO está mais bloqueado — é essencial para exercícios de entrada.
 BLOCKED_BUILTINS = {
-    "open", "input", "exec", "eval", "compile", "__import__",
+    "open", "exec", "eval", "compile", "__import__",
     "exit", "quit", "help", "breakpoint",
 }
 
 MAX_OUTPUT_CHARS = 20_000
 
+# Valor padrão quando o código chama input() sem entrada disponível.
+DEFAULT_INPUT = "Estudante"
+
 
 def _set_resource_limits() -> None:
-    """Aplica limites de CPU/memória (só funciona em POSIX)."""
     if resource is None:
-        return  # Windows: sem `resource`. O timeout do subprocess protege.
+        return
 
     cpu_seconds = 5
     memory_bytes = 128 * 1024 * 1024
@@ -61,12 +64,36 @@ def _restricted_import(name, globals=None, locals=None, fromlist=(), level=0):
     return _builtins_module.__import__(name, globals, locals, fromlist, level)
 
 
+def _make_safe_input(default_value: str):
+    """
+    Cria uma versão segura de input() que:
+    - Funciona normalmente quando há entrada disponível
+    - Retorna um valor padrão quando não há (evita EOFError)
+    - Trunca prompts muito longos
+    """
+    original_input = _builtins_module.input
+
+    def safe_input(prompt=""):
+        try:
+            return original_input(prompt)
+        except EOFError:
+            # Nenhuma entrada disponível — devolve valor padrão
+            return default_value
+        except Exception:
+            return default_value
+
+    return safe_input
+
+
 def _build_restricted_globals() -> dict:
     safe_builtins = {
         k: v for k, v in vars(_builtins_module).items()
         if k not in BLOCKED_BUILTINS
     }
     safe_builtins["__import__"] = _restricted_import
+    # Substitui input() por uma versão que não quebra sem stdin
+    safe_builtins["input"] = _make_safe_input(DEFAULT_INPUT)
+
     return {"__builtins__": safe_builtins, "__name__": "__aluno__"}
 
 

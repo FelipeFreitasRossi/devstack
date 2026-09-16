@@ -7,25 +7,25 @@ from app.database import (
 
 CURRICULUM = [
     {
-    "id": "01",
-    "title": "Lógica de Programação",
-    "description": "O básico antes de programar: pensar como um dev",
-    "duration_hours": 8,
-    "lessons": [
-        {"id": "01-01", "title": "Fundamentos da Programação", "reading_time_minutes": 29, "has_exercise": True},
-        {"id": "01-03", "title": "Variáveis e Constantes", "reading_time_minutes": 12, "has_exercise": True},
-        {"id": "01-04", "title": "Tipos de Dados", "reading_time_minutes": 12, "has_exercise": True},
-        {"id": "01-05", "title": "Operadores Aritméticos", "reading_time_minutes": 10, "has_exercise": True},
-        {"id": "01-06", "title": "Operadores Lógicos e Relacionais", "reading_time_minutes": 12, "has_exercise": True},
-        {"id": "01-07", "title": "Estruturas Condicionais (if/else)", "reading_time_minutes": 14, "has_exercise": True},
-        {"id": "01-08", "title": "Estruturas de Repetição (for/while)", "reading_time_minutes": 15, "has_exercise": True},
-        {"id": "01-09", "title": "Listas", "reading_time_minutes": 12, "has_exercise": True},
-        {"id": "01-10", "title": "Dicionários", "reading_time_minutes": 12, "has_exercise": True},
-        {"id": "01-11", "title": "Funções", "reading_time_minutes": 14, "has_exercise": True},
-        {"id": "01-12", "title": "Projeto: Calculadora", "reading_time_minutes": 20, "has_exercise": True},
-    ],
+        "id": "01",
+        "title": "Lógica de Programação",
+        "description": "O básico antes de programar: pensar como um dev",
+        "duration_hours": 8,
+        "lessons": [
+            {"id": "01-01", "title": "Fundamentos da Programação", "reading_time_minutes": 34, "has_exercise": True},
+            {"id": "01-03", "title": "Variáveis e Constantes", "reading_time_minutes": 18, "has_exercise": True},
+            {"id": "01-04", "title": "Tipos de Dados", "reading_time_minutes": 16, "has_exercise": True},
+            {"id": "01-05", "title": "Operadores Aritméticos", "reading_time_minutes": 14, "has_exercise": True},
+            {"id": "01-06", "title": "Operadores Lógicos e Relacionais", "reading_time_minutes": 14, "has_exercise": True},
+            {"id": "01-07", "title": "Estruturas Condicionais (if/else)", "reading_time_minutes": 16, "has_exercise": True},
+            {"id": "01-08", "title": "Estruturas de Repetição (for/while)", "reading_time_minutes": 18, "has_exercise": True},
+            {"id": "01-09", "title": "Listas", "reading_time_minutes": 16, "has_exercise": True},
+            {"id": "01-10", "title": "Dicionários", "reading_time_minutes": 16, "has_exercise": True},
+            {"id": "01-11", "title": "Funções", "reading_time_minutes": 18, "has_exercise": True},
+            {"id": "01-12", "title": "Projeto: Calculadora", "reading_time_minutes": 20, "has_exercise": True},
+        ],
     },
-    {   
+    {
         "id": "02",
         "title": "Python Fundamentos",
         "description": "Sintaxe, entrada/saída e estruturas básicas",
@@ -284,7 +284,39 @@ def calculate_total_hours(user_id: str) -> float:
     return round(result[0]["total"] / 60, 1)
 
 
-def calculate_module_progress(user_id: str, module: dict) -> dict:
+def _is_module_unlocked(user_id: str, module_index: int) -> bool:
+    """
+    Verifica se um módulo está desbloqueado para o aluno.
+    
+    Regra: um módulo só desbloqueia se TODOS os módulos anteriores
+    estiverem 100% concluídos.
+    
+    - Módulo 01 (índice 0) sempre desbloqueado.
+    - Módulo 02 (índice 1) desbloqueia quando módulo 01 estiver completo.
+    - E assim por diante.
+    """
+    if module_index == 0:
+        return True
+
+    # Verifica todos os módulos anteriores
+    for i in range(module_index):
+        previous_module = CURRICULUM[i]
+        prev_total = len(previous_module["lessons"])
+        prev_completed = progress_collection.count_documents({
+            "user_id": user_id,
+            "module_id": previous_module["id"],
+            "completed": True,
+        })
+        if prev_completed < prev_total:
+            return False
+
+    return True
+
+
+def calculate_module_progress(
+    user_id: str, module: dict, module_index: int = 0
+) -> dict:
+    """Calcula progresso do aluno em um módulo."""
     module_id = module["id"]
     total = len(module["lessons"])
 
@@ -296,14 +328,14 @@ def calculate_module_progress(user_id: str, module: dict) -> dict:
 
     percent = round((completed / total) * 100) if total > 0 else 0
 
-    if completed == 0 and module_id != "01":
+    # Verifica se está desbloqueado (regra sequencial)
+    unlocked = _is_module_unlocked(user_id, module_index)
+
+    if not unlocked:
         status = "locked"
     elif completed == total:
         status = "completed"
     else:
-        status = "in_progress"
-
-    if module_id == "01" and status == "locked":
         status = "in_progress"
 
     return {
@@ -315,11 +347,16 @@ def calculate_module_progress(user_id: str, module: dict) -> dict:
         "status": status,
         "duration_hours": module["duration_hours"],
         "progress_percent": percent,
+        "unlocked": unlocked,
     }
 
 
 def get_next_lesson(user_id: str) -> dict | None:
-    for module in CURRICULUM:
+    for module_index, module in enumerate(CURRICULUM):
+        # Só procura próxima aula em módulos desbloqueados
+        if not _is_module_unlocked(user_id, module_index):
+            break
+
         for lesson in module["lessons"]:
             done = progress_collection.find_one({
                 "user_id": user_id,
@@ -327,7 +364,9 @@ def get_next_lesson(user_id: str) -> dict | None:
                 "completed": True,
             })
             if not done:
-                module_progress = calculate_module_progress(user_id, module)
+                module_progress = calculate_module_progress(
+                    user_id, module, module_index
+                )
                 return {
                     "module_id": module["id"],
                     "module_title": module["title"],
@@ -368,8 +407,8 @@ def check_achievements(user_id: str) -> list[str]:
     hours = calculate_total_hours(user_id)
 
     modules_complete = 0
-    for module in CURRICULUM:
-        prog = calculate_module_progress(user_id, module)
+    for index, module in enumerate(CURRICULUM):
+        prog = calculate_module_progress(user_id, module, index)
         if prog["status"] == "completed":
             modules_complete += 1
 
@@ -413,7 +452,11 @@ def get_all_achievements(user_id: str) -> list[dict]:
 
 
 def get_all_modules_with_progress(user_id: str) -> list[dict]:
-    return [calculate_module_progress(user_id, m) for m in CURRICULUM]
+    """Retorna todos os módulos com progresso (respeitando a regra sequencial)."""
+    result = []
+    for index, module in enumerate(CURRICULUM):
+        result.append(calculate_module_progress(user_id, module, index))
+    return result
 
 
 def get_weekly_activity(user_id: str) -> list[dict]:
@@ -516,10 +559,8 @@ def get_lesson_sidebar(user_id: str, current_lesson_id: str) -> list[dict]:
     }
 
     sidebar = []
-    previous_module_completed = True
-
-    for module in CURRICULUM:
-        module_unlocked = module["id"] == "01" or previous_module_completed
+    for index, module in enumerate(CURRICULUM):
+        module_unlocked = _is_module_unlocked(user_id, index)
         lessons_out = []
 
         for lesson in module["lessons"]:
@@ -540,17 +581,11 @@ def get_lesson_sidebar(user_id: str, current_lesson_id: str) -> list[dict]:
                 "status": status,
             })
 
-        module_completed_now = all(
-            l["id"] in completed_lesson_ids for l in module["lessons"]
-        )
-
         sidebar.append({
             "id": module["id"],
             "title": module["title"],
             "unlocked": module_unlocked,
             "lessons": lessons_out,
         })
-
-        previous_module_completed = module_completed_now
 
     return sidebar

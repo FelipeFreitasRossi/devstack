@@ -44,12 +44,10 @@ export function LessonPage() {
   }, [user, authLoading, navigate]);
 
   useEffect(() => {
-    // Fecha ao mudar de lição (sem animação, mudança instantânea)
     setSidebarOpen(false);
     setSidebarClosing(false);
   }, [lessonId]);
 
-  // Bloqueia scroll quando sidebar aberta no mobile
   useEffect(() => {
     if (window.innerWidth < 1024) {
       document.body.style.overflow = sidebarOpen ? 'hidden' : '';
@@ -123,10 +121,9 @@ export function LessonPage() {
           <LessonSidebar sidebar={sidebar} currentLessonId={lesson.id} />
         </aside>
 
-        {/* Sidebar MOBILE (drawer com animação de entrada E saída) */}
+        {/* Sidebar MOBILE (drawer) */}
         {sidebarOpen && (
           <>
-            {/* Overlay */}
             <div
               className={`lg:hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 ${
                 sidebarClosing ? 'animate-fade-out' : 'animate-fade-in'
@@ -134,7 +131,6 @@ export function LessonPage() {
               onClick={closeSidebar}
             />
 
-            {/* Drawer */}
             <aside
               className={`lg:hidden fixed top-0 left-0 bottom-0 w-[85%] max-w-xs bg-surface border-r border-border z-50 flex flex-col ${
                 sidebarClosing
@@ -142,7 +138,6 @@ export function LessonPage() {
                   : 'animate-slide-in-left'
               }`}
             >
-              {/* Topo */}
               <div className="flex items-center justify-between p-4 border-b border-border">
                 <span className="text-xs font-semibold text-text-primary uppercase tracking-wider">
                   Trilha
@@ -156,7 +151,6 @@ export function LessonPage() {
                 </button>
               </div>
 
-              {/* Conteúdo da sidebar com scroll */}
               <div className="flex-1 overflow-y-auto p-4">
                 <LessonSidebar
                   sidebar={sidebar}
@@ -219,11 +213,12 @@ export function LessonPage() {
               </div>
             </div>
 
+            {/* TÓPICOS */}
             {topics.map((topic, topicIndex) => (
               <div key={topic.id} className="mb-14">
                 <div className="flex items-center gap-3 mb-6">
-                  <span className="shrink-0 w-8 h-8 rounded-lg bg-brand-500/15 border border-brand-500/40 flex items-center justify-center text-sm font-bold text-brand-500 font-mono">
-                    {topicIndex + 1}
+                  <span className="shrink-0 w-10 h-10 rounded-lg bg-brand-500/15 border border-brand-500/40 flex items-center justify-center text-sm font-bold text-brand-500 font-mono">
+                    {String(topicIndex + 1).padStart(2, '0')}
                   </span>
                   <h2 className="text-xl md:text-2xl font-bold text-text-primary tracking-tight">
                     {topic.title}

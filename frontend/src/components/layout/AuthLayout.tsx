@@ -39,7 +39,7 @@ export function AuthLayout({
         { opacity: 1, x: 0, duration: 1.4, ease: 'power3.out' }
       );
 
-      // 2. Mascote entra deslizando pela lateral (do canto onde ele está)
+      // 2. Mascote entra deslizando pela lateral
       tl.fromTo(
         mascotRef.current,
         { opacity: 0, x: isLeft ? -80 : 80 },
@@ -130,13 +130,13 @@ export function AuthLayout({
         }}
       />
 
-      {/* ===== 🦥 MASCOTE COLADO NO CANTO INFERIOR, SAINDO PELA BORDA ===== */}
+      {/* ===== 🦥 MASCOTE COLADO NO CANTO INFERIOR ===== */}
       <div
         className={`absolute bottom-0 z-20 pointer-events-none translate-y-[-45px] ${
           isLeft ? 'left-0 -translate-x-[30px]' : 'right-0 translate-x-[30px]'
         }`}
       >
-        {/* Wrapper que recebe a animação GSAP (opacity + x) */}
+        {/* Wrapper que recebe a animação GSAP */}
         <div ref={mascotRef} className="opacity-0">
           {/* Wrapper que aplica o flip horizontal no modo 'left' */}
           <div
@@ -144,9 +144,11 @@ export function AuthLayout({
               transform: isLeft ? 'scaleX(-1)' : 'none',
             }}
           >
+            {/* Desktop — TAMANHO AUMENTADO */}
             <div className="hidden sm:block">
-              <SlothMascot size={200} anchor="bottom" />
+              <SlothMascot size={280} anchor="bottom" />
             </div>
+            {/* Mobile — mantém pequeno */}
             <div className="sm:hidden">
               <SlothMascot size={130} anchor="bottom" />
             </div>
