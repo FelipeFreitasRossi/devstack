@@ -3,6 +3,7 @@ import type { FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthLayout } from '../components/layout/AuthLayout';
 import { Input } from '../components/ui/Input';
+import { PasswordInput } from '../components/ui/PasswordInput';
 import { Button } from '../components/ui/Button';
 import { useAuth } from '../contexts/AuthContext';
 import { useAuthTransition } from '../contexts/AuthTransitionContext';
@@ -70,9 +71,8 @@ export function Cadastro() {
           required
         />
 
-        <Input
+        <PasswordInput
           label="Senha"
-          type="password"
           name="password"
           placeholder="Mínimo 6 caracteres"
           value={password}
@@ -80,9 +80,8 @@ export function Cadastro() {
           required
         />
 
-        <Input
+        <PasswordInput
           label="Confirmar senha"
-          type="password"
           name="confirmPassword"
           placeholder="Repita a senha"
           value={confirmPassword}

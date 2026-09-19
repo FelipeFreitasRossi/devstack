@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Save, X, Pencil, Loader2, CheckCircle2 } from 'lucide-react';
+import { Save, X, Pencil, Loader2, CheckCircle2, User, Mail, Lock as LockIcon } from 'lucide-react';
 import { Button } from '../ui/Button';
 
 interface ProfileInfoProps {
@@ -50,16 +50,26 @@ export function ProfileInfo({ name, email, onSaveName }: ProfileInfoProps) {
 
   return (
     <section>
-      <h2 className="text-lg md:text-xl font-bold text-text-primary mb-4">
-        Dados pessoais
-      </h2>
+      <div className="flex items-center gap-2 mb-4">
+        <User size={16} className="text-brand-500" />
+        <h2 className="text-lg md:text-xl font-bold text-text-primary">
+          Dados pessoais
+        </h2>
+      </div>
 
-      <div className="rounded-xl border border-border bg-surface-elevated p-5 md:p-6 space-y-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* Nome */}
-        <div>
-          <label className="block text-xs font-medium text-text-secondary uppercase tracking-wider mb-2">
-            Nome completo
-          </label>
+        <div
+          className={`rounded-xl border bg-surface-elevated p-5 transition-colors ${
+            isEditing ? 'sm:col-span-2 border-brand-500/40' : 'border-border hover:border-border-strong'
+          }`}
+        >
+          <div className="flex items-center gap-2 mb-3">
+            <User size={13} className="text-text-muted" />
+            <label className="text-xs font-medium text-text-secondary uppercase tracking-wider">
+              Nome completo
+            </label>
+          </div>
 
           {isEditing ? (
             <div className="flex flex-col sm:flex-row gap-2">
@@ -101,8 +111,8 @@ export function ProfileInfo({ name, email, onSaveName }: ProfileInfoProps) {
               </div>
             </div>
           ) : (
-            <div className="flex items-center justify-between gap-3 p-3 rounded-lg bg-surface border border-border">
-              <span className="text-text-primary truncate">{name}</span>
+            <div className="flex items-center justify-between gap-3">
+              <span className="text-text-primary font-medium truncate">{name}</span>
               <button
                 onClick={() => setIsEditing(true)}
                 className="shrink-0 inline-flex items-center gap-1.5 text-xs text-brand-500 hover:text-brand-400 font-medium transition-colors"
@@ -113,9 +123,7 @@ export function ProfileInfo({ name, email, onSaveName }: ProfileInfoProps) {
             </div>
           )}
 
-          {error && (
-            <p className="text-xs text-danger mt-2">{error}</p>
-          )}
+          {error && <p className="text-xs text-danger mt-2">{error}</p>}
           {success && (
             <p className="text-xs text-accent-500 mt-2 inline-flex items-center gap-1.5">
               <CheckCircle2 size={12} />
@@ -125,17 +133,25 @@ export function ProfileInfo({ name, email, onSaveName }: ProfileInfoProps) {
         </div>
 
         {/* Email (read-only) */}
-        <div>
-          <label className="block text-xs font-medium text-text-secondary uppercase tracking-wider mb-2">
-            Email
-          </label>
-          <div className="p-3 rounded-lg bg-surface border border-border text-text-muted">
-            {email}
+        {!isEditing && (
+          <div className="rounded-xl border border-border bg-surface-elevated p-5 hover:border-border-strong transition-colors">
+            <div className="flex items-center gap-2 mb-3">
+              <Mail size={13} className="text-text-muted" />
+              <label className="text-xs font-medium text-text-secondary uppercase tracking-wider">
+                Email
+              </label>
+            </div>
+            <div className="flex items-center justify-between gap-3">
+              <span className="text-text-primary font-medium truncate">{email}</span>
+              <span className="shrink-0 inline-flex items-center gap-1 text-xs text-text-muted">
+                <LockIcon size={11} />
+              </span>
+            </div>
+            <p className="text-xs text-text-muted mt-2">
+              O email não pode ser alterado.
+            </p>
           </div>
-          <p className="text-xs text-text-muted mt-2">
-            O email não pode ser alterado.
-          </p>
-        </div>
+        )}
       </div>
     </section>
   );

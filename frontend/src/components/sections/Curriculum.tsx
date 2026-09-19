@@ -4,23 +4,23 @@ import { useScrollAnimation } from '../../hooks/useScrollAnimation';
 const modules = [
   {
     number: '01',
-    title: 'Fundamentos da Programação',
-    topics: ['Lógica', 'Algoritmos', 'Git e GitHub', 'Terminal'],
+    title: 'Lógica de Programação',
+    topics: ['Algoritmos', 'Variáveis e tipos', 'Condicionais (if/else)', 'Laços (for/while)'],
   },
   {
     number: '02',
-    title: 'Python do Zero ao Avançado',
-    topics: ['Sintaxe', 'POO', 'APIs', 'Testes'],
+    title: 'Fundamentos de Python',
+    topics: ['Instalação e ambiente', 'Sintaxe e print()', 'input() e conversão de tipos', 'Strings'],
   },
   {
     number: '03',
-    title: 'Frontend Moderno',
-    topics: ['HTML/CSS', 'JavaScript', 'React', 'TypeScript'],
+    title: 'Estruturas de Dados em Python',
+    topics: ['Listas', 'Tuplas', 'Sets', 'Dicionários'],
   },
   {
     number: '04',
-    title: 'Backend Profissional',
-    topics: ['FastAPI', 'MongoDB', 'Autenticação', 'Deploy'],
+    title: 'Python na Prática',
+    topics: ['Funções', 'Programação orientada a objetos', 'Manipulação de arquivos', 'Projetos guiados'],
   },
 ];
 
@@ -32,6 +32,7 @@ export function Curriculum() {
 
   return (
     <section
+      id="curriculum"
       ref={containerRef}
       // Depois — respiro controlado
     className="px-4 sm:px-6 lg:px-8 py-16 md:py-20"

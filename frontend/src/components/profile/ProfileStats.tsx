@@ -1,4 +1,4 @@
-import { BookOpen, Trophy, Clock, Flame } from 'lucide-react';
+import { BookOpen, Trophy, Clock, Flame, TrendingUp } from 'lucide-react';
 import type { ProfileStats as StatsType } from '../../services/api';
 
 interface ProfileStatsProps {
@@ -35,9 +35,12 @@ export function ProfileStats({ stats }: ProfileStatsProps) {
 
   return (
     <section>
-      <h2 className="text-lg md:text-xl font-bold text-text-primary mb-4">
-        Seu progresso
-      </h2>
+      <div className="flex items-center gap-2 mb-4">
+        <TrendingUp size={16} className="text-brand-500" />
+        <h2 className="text-lg md:text-xl font-bold text-text-primary">
+          Seu progresso
+        </h2>
+      </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
         {items.map((item) => {

@@ -3,6 +3,7 @@ import type { FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthLayout } from '../components/layout/AuthLayout';
 import { Input } from '../components/ui/Input';
+import { PasswordInput } from '../components/ui/PasswordInput';
 import { Button } from '../components/ui/Button';
 import { useAuth } from '../contexts/AuthContext';
 import { useAuthTransition } from '../contexts/AuthTransitionContext';
@@ -47,9 +48,8 @@ export function Login() {
           required
         />
 
-        <Input
+        <PasswordInput
           label="Senha"
-          type="password"
           name="password"
           placeholder="Sua senha"
           value={password}

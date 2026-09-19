@@ -151,6 +151,19 @@ function CTASection() {
         <DiscordIcon size={240} />
       </div>
 
+      {/* Versão mobile do ícone decorativo do Discord — não existia antes;
+          menor e discreta para não sobrepor o texto nem gerar overflow.
+          Não afeta a versão acima (tablet/desktop), que continua igual. */}
+      <div
+        aria-hidden
+        className="absolute -top-4 -right-4 pointer-events-none select-none sm:hidden opacity-[0.14]"
+        style={{
+          color: 'rgba(220, 228, 255, 1)',
+        }}
+      >
+        <DiscordIcon size={88} />
+      </div>
+
       <div
         aria-hidden
         className="absolute -top-32 -right-32 w-64 h-64 sm:w-96 sm:h-96 rounded-full opacity-20 blur-3xl pointer-events-none"

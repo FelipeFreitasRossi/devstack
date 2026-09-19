@@ -67,7 +67,7 @@ export function Hero() {
           data-animate
           className="text-fluid-5xl font-bold text-text-primary leading-[1.05] tracking-tight mb-6"
         >
-          Domine programação.
+          Aprenda Python do zero.
           <br />
           <span className="relative inline-block">
             <span className="text-brand-500">Para sempre.</span>
@@ -93,8 +93,9 @@ export function Hero() {
           data-animate
           className="text-fluid-base md:text-fluid-lg text-text-secondary max-w-2xl mx-auto mb-10 leading-relaxed"
         >
-          Aprenda do zero ao profissional com projetos reais, mentoria da
-          comunidade e acesso vitalício a todo o conteúdo.{' '}
+          Aprenda lógica de programação e os fundamentos de Python através de
+          uma trilha prática e organizada, com projetos reais e acesso
+          vitalício a todo o conteúdo.{' '}
           <span className="text-text-primary font-medium">
             Pague uma vez, evolua para sempre.
           </span>
@@ -137,7 +138,7 @@ export function Hero() {
         >
           <span className="flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-brand-500" />
-            Garantia de 7 dias
+            Garantia de 2 dias
           </span>
           <span className="flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-brand-500" />

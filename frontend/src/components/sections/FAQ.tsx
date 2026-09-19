@@ -21,7 +21,7 @@ const faqs = [
   {
     question: 'Quais tecnologias vou aprender?',
     answer:
-      'Python, JavaScript, TypeScript, React, FastAPI, MongoDB, Git, deploy e muito mais — tudo aplicado em projetos reais e exercícios práticos.',
+      'O curso é 100% focado em Python. Você começa pela lógica de programação e avança pelos fundamentos da linguagem — variáveis, estruturas de dados, funções e orientação a objetos — tudo aplicado em projetos reais e exercícios práticos.',
   },
   {
     question: 'Quanto tempo tenho para concluir?',
@@ -31,7 +31,7 @@ const faqs = [
   {
     question: 'E se eu não gostar?',
     answer:
-      'Você tem 2 dias de garantia incondicional. Se não for para você, basta solicitar o reembolso pelo nosso e-mail e devolvemos 100% do valor pago.',
+      'Você tem 2 dias corridos de garantia incondicional. Se não for para você, basta solicitar o reembolso pelo nosso e-mail e devolvemos 100% do valor pago.',
   },
 ];
 
@@ -44,6 +44,7 @@ export function FAQ() {
 
   return (
     <section
+      id="faq"
       ref={containerRef}
       className="px-4 sm:px-6 lg:px-8 py-fluid-section bg-surface-elevated/20"
     >

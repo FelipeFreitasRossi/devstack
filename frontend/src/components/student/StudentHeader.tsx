@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
-  Bell,
   LogOut,
   Menu,
   X,
@@ -101,15 +100,6 @@ export function StudentHeader() {
 
             {/* Ações */}
             <div className="flex items-center gap-1 md:gap-2 shrink-0">
-              {/* Notificação — só desktop */}
-              <button
-                className="hidden md:flex relative p-2 rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface-elevated transition-colors"
-                aria-label="Notificações"
-              >
-                <Bell size={18} />
-                <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-brand-500" />
-              </button>
-
               {/* Avatar — só desktop */}
               <div className="relative hidden md:block">
                 <button
@@ -248,13 +238,6 @@ export function StudentHeader() {
                 <UserIcon size={18} />
                 Meu perfil
               </Link>
-              <button
-                onClick={closeMenu}
-                className="w-full flex items-center gap-3 px-3 py-3 rounded-lg text-sm text-text-secondary hover:text-text-primary hover:bg-surface-elevated transition-colors"
-              >
-                <Bell size={18} />
-                Notificações
-              </button>
             </nav>
 
             {/* Sair */}

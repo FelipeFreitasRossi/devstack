@@ -4,23 +4,23 @@ import { useScrollAnimation } from '../../hooks/useScrollAnimation';
 const testimonials = [
   {
     name: 'Gabrielly',
-    role: 'Dev Frontend na Vercel',
+    role: 'Estudante de Python',
     avatar: 'GM',
-    text: 'A trilha da Devstack me tirou do zero absoluto e em 8 meses eu consegui minha primeira vaga como dev. Os projetos do portfólio fizeram toda a diferença.',
+    text: 'A trilha da Devstack me tirou do zero absoluto e em poucos meses eu já estava escrevendo meus próprios programas em Python. Os exercícios práticos fizeram toda a diferença.',
     rating: 5,
   },
   {
     name: 'Pedro Henrique',
-    role: 'Fullstack Developer',
+    role: 'Iniciante em programação',
     avatar: 'PH',
-    text: 'O que mais me impressionou foi a profundidade do conteúdo de backend. Não é curso raso — é formação de verdade, com projetos complexos e boas práticas.',
+    text: 'O que mais me impressionou foi a profundidade do conteúdo. Não é curso raso — é formação de verdade, começando pela lógica e avançando com calma pelos fundamentos de Python.',
     rating: 5,
   },
   {
     name: 'João Pedro',
-    role: 'Dev Python na Nubank',
+    role: 'Dev Python Júnior',
     avatar: 'JP',
-    text: 'Paguei uma vez e nunca mais me preocupei. Sempre que sai conteúdo novo, eu acesso. Vale cada centavo. Recomendo pra qualquer pessoa que queira levar programação a sério.',
+    text: 'Paguei uma vez e nunca mais me preocupei. Sempre que sai conteúdo novo, eu acesso. Vale cada centavo. Recomendo pra qualquer pessoa que queira aprender Python de verdade.',
     rating: 5,
   },
 ];

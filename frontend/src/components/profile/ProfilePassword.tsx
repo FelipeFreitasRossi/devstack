@@ -6,6 +6,7 @@ import {
   Loader2,
   CheckCircle2,
   AlertCircle,
+  ShieldCheck,
 } from 'lucide-react';
 import { Button } from '../ui/Button';
 
@@ -22,6 +23,7 @@ export function ProfilePassword({ onChangePassword }: ProfilePasswordProps) {
   const [confirm, setConfirm] = useState('');
   const [showCurrent, setShowCurrent] = useState(false);
   const [showNew, setShowNew] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
@@ -71,9 +73,12 @@ export function ProfilePassword({ onChangePassword }: ProfilePasswordProps) {
 
   return (
     <section>
-      <h2 className="text-lg md:text-xl font-bold text-text-primary mb-4">
-        Segurança
-      </h2>
+      <div className="flex items-center gap-2 mb-4">
+        <ShieldCheck size={16} className="text-brand-500" />
+        <h2 className="text-lg md:text-xl font-bold text-text-primary">
+          Segurança
+        </h2>
+      </div>
 
       <form
         onSubmit={handleSubmit}
@@ -141,14 +146,24 @@ export function ProfilePassword({ onChangePassword }: ProfilePasswordProps) {
           <label className="block text-xs font-medium text-text-secondary mb-2">
             Confirmar nova senha
           </label>
-          <input
-            type="password"
-            value={confirm}
-            onChange={(e) => setConfirm(e.target.value)}
-            placeholder="Repita a nova senha"
-            className={inputClass}
-            required
-          />
+          <div className="relative">
+            <input
+              type={showConfirm ? 'text' : 'password'}
+              value={confirm}
+              onChange={(e) => setConfirm(e.target.value)}
+              placeholder="Repita a nova senha"
+              className={inputClass}
+              required
+            />
+            <button
+              type="button"
+              onClick={() => setShowConfirm(!showConfirm)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary transition-colors"
+              aria-label={showConfirm ? 'Ocultar' : 'Mostrar'}
+            >
+              {showConfirm ? <EyeOff size={16} /> : <Eye size={16} />}
+            </button>
+          </div>
         </div>
 
         {/* Feedback */}

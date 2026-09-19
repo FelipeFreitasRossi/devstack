@@ -1,4 +1,5 @@
 import { Check, Sparkles } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '../ui/Button';
 import { useScrollAnimation } from '../../hooks/useScrollAnimation';
 
@@ -10,10 +11,11 @@ const benefits = [
   'Exercícios com soluções comentadas',
   'Suporte direto com instrutores',
   'Atualizações para sempre',
-  'Garantia de 7 dias',
+  'Garantia de 2 dias',
 ];
 
 export function Pricing() {
+  const navigate = useNavigate();
   const containerRef = useScrollAnimation<HTMLElement>({
     y: 40,
     stagger: 0.1,
@@ -98,7 +100,11 @@ export function Pricing() {
             ))}
           </ul>
 
-          <Button size="lg" className="w-full">
+          <Button
+            size="lg"
+            className="w-full"
+            onClick={() => navigate('/cadastro')}
+          >
             Garantir meu acesso por R$19,99
           </Button>
 

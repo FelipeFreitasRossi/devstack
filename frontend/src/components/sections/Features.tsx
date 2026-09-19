@@ -77,7 +77,7 @@ const differentials = [
   },
   {
     icon: Shield,
-    title: 'Garantia de 7 dias',
+    title: 'Garantia de 2 dias',
     description: 'Não gostou? Devolvemos 100% do valor. Sem perguntas.',
   },
   {
@@ -110,6 +110,7 @@ export function Features() {
 
   return (
     <section
+      id="features"
       ref={containerRef}
       className="relative px-4 sm:px-6 lg:px-8 py-fluid-section overflow-hidden"
     >

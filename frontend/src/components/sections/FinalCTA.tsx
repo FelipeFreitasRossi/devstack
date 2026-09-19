@@ -1,8 +1,12 @@
 import { ArrowRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '../ui/Button';
 import { useScrollAnimation } from '../../hooks/useScrollAnimation';
 
+const SUPPORT_EMAIL = 'feliperossidev@gmail.com';
+
 export function FinalCTA() {
+  const navigate = useNavigate();
   const containerRef = useScrollAnimation<HTMLElement>({ y: 40, stagger: 0.12 });
 
   return (
@@ -40,11 +44,22 @@ export function FinalCTA() {
           data-animate
           className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center"
         >
-          <Button size="lg" className="w-full sm:w-auto">
+          <Button
+            size="lg"
+            className="w-full sm:w-auto"
+            onClick={() => navigate('/cadastro')}
+          >
             Quero garantir meu acesso
             <ArrowRight size={20} />
           </Button>
-          <Button variant="secondary" size="lg" className="w-full sm:w-auto">
+          <Button
+            variant="secondary"
+            size="lg"
+            className="w-full sm:w-auto"
+            onClick={() => {
+              window.location.href = `mailto:${SUPPORT_EMAIL}`;
+            }}
+          >
             Falar com suporte
           </Button>
         </div>
