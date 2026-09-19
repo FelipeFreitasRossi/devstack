@@ -3,28 +3,19 @@ Pacote lessons_content
 =======================
 Este pacote substitui o antigo arquivo único `lessons_content.py`.
 
-Por quê a mudança?
--------------------
-O arquivo original tinha mais de 7500 linhas e ficava difícil de manter.
-Além disso, o dicionário `LESSONS` (no final do arquivo) citava lições dos
-módulos 08 a 12 (ex: LESSON_08_01) que nunca chegaram a ser escritas em
-lugar nenhum do arquivo — só o "nome" delas aparecia no dicionário, sem o
-conteúdo correspondente. Isso é o que causava o erro:
+Cada módulo do curso vive no seu próprio arquivo:
+    lessons_module_01.py, lessons_module_02.py, ...
 
-    NameError: name 'LESSON_08_01' is not defined
+O dicionário LESSONS (abaixo) só inclui os módulos que realmente têm
+conteúdo. Assim, o erro `NameError: name 'LESSON_08_01' is not defined`
+não acontece mais, porque não citamos lições que não existem.
 
-Agora, cada módulo do curso vive no seu próprio arquivo
-(lessons_module_01.py, lessons_module_02.py, ...), e o dicionário LESSONS
-só inclui os módulos que realmente têm conteúdo (01 a 07).
-
-Como adicionar um módulo novo (ex: módulo 08)?
-------------------------------------------------
-1. Crie o arquivo `lessons_module_08.py` nesta mesma pasta.
-2. Escreva as lições nele, seguindo o mesmo formato dos outros
-   (LESSON_08_01 = {...}, LESSON_08_02 = {...}, etc).
-3. Neste arquivo (__init__.py), importe o módulo novo e registre as
-   lições no dicionário LESSONS (veja os comentários abaixo indicando
-   onde adicionar).
+Como adicionar um módulo novo:
+-------------------------------
+1. Crie o arquivo `lessons_module_XX.py` nesta mesma pasta.
+2. Escreva as lições nele (LESSON_XX_01 = {...}, LESSON_XX_02 = {...}).
+3. Neste arquivo (__init__.py), importe as lições e registre no dicionário
+   LESSONS (procure os comentários marcando onde adicionar).
 """
 
 from app.analytics import CURRICULUM
@@ -90,12 +81,12 @@ from .lessons_module_07 import (
 )
 
 # ----------------------------------------------------------------------
-# 👉 QUANDO CRIAR O MÓDULO 08, adicione aqui:
-#
-# from .lessons_module_08 import (
-#     LESSON_08_01, LESSON_08_02, ...
-# )
+# Módulo 08 — Git e GitHub
 # ----------------------------------------------------------------------
+from .lessons_module_08 import (
+    LESSON_08_01, LESSON_08_02, LESSON_08_03, LESSON_08_04, LESSON_08_05,
+    LESSON_08_06, LESSON_08_07, LESSON_08_08, LESSON_08_09, LESSON_08_10,
+)
 
 
 # ============================================================================
@@ -137,15 +128,22 @@ LESSONS: dict[str, dict] = {
     "07-07": LESSON_07_07, "07-08": LESSON_07_08, "07-09": LESSON_07_09,
     "07-10": LESSON_07_10, "07-11": LESSON_07_11, "07-12": LESSON_07_12,
     "07-13": LESSON_07_13, "07-14": LESSON_07_14,
-
-    # 👉 QUANDO CRIAR O MÓDULO 08, adicione aqui:
-    # "08-01": LESSON_08_01, "08-02": LESSON_08_02, ...
+    # Módulo 08 — Git e GitHub
+    "08-01": LESSON_08_01, "08-02": LESSON_08_02, "08-03": LESSON_08_03,
+    "08-04": LESSON_08_04, "08-05": LESSON_08_05, "08-06": LESSON_08_06,
+    "08-07": LESSON_08_07, "08-08": LESSON_08_08, "08-09": LESSON_08_09,
+    "08-10": LESSON_08_10,
 }
 
 
 # ============================================================================
-# FUNÇÕES AUXILIARES
+# FUNÇÕES AUXILIARES  ⚠️ NÃO REMOVA ESTE BLOCO
 # ============================================================================
+# As rotas em `app/routes/lessons.py` importam estas 3 funções:
+#     get_lesson, get_adjacent_lesson_ids, validate_submission
+# Se qualquer uma delas faltar, o servidor sobe com ImportError.
+# ============================================================================
+
 def _flat_lesson_order() -> list[tuple[str, str]]:
     order = []
     for module in CURRICULUM:

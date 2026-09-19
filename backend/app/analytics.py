@@ -104,129 +104,102 @@ CURRICULUM = [
         ],
     },
     {
-        "id": "06",
-        "title": "HTML + CSS",
-        "description": "Estrutura e estilo das páginas web",
-        "duration_hours": 14,
-        "lessons": [
-            {"id": "06-01", "title": "Estrutura HTML", "reading_time_minutes": 12, "has_exercise": True},
-            {"id": "06-02", "title": "Tags principais e textos", "reading_time_minutes": 12, "has_exercise": True},
-            {"id": "06-03", "title": "Links, imagens e listas", "reading_time_minutes": 12, "has_exercise": True},
-            {"id": "06-04", "title": "Tabelas e formulários", "reading_time_minutes": 14, "has_exercise": True},
-            {"id": "06-05", "title": "HTML semântico", "reading_time_minutes": 12, "has_exercise": True},
-            {"id": "06-06", "title": "Acessibilidade", "reading_time_minutes": 10, "has_exercise": False},
-            {"id": "06-07", "title": "CSS: seletores e box model", "reading_time_minutes": 14, "has_exercise": True},
-            {"id": "06-08", "title": "Flexbox", "reading_time_minutes": 16, "has_exercise": True},
-            {"id": "06-09", "title": "Grid", "reading_time_minutes": 16, "has_exercise": True},
-            {"id": "06-10", "title": "Cores, tipografia e sombras", "reading_time_minutes": 12, "has_exercise": True},
-            {"id": "06-11", "title": "Gradientes e transições", "reading_time_minutes": 12, "has_exercise": True},
-            {"id": "06-12", "title": "Animações CSS", "reading_time_minutes": 14, "has_exercise": True},
-            {"id": "06-13", "title": "Responsividade e media queries", "reading_time_minutes": 16, "has_exercise": True},
-            {"id": "06-14", "title": "Projeto: Landing Page", "reading_time_minutes": 30, "has_exercise": True},
-        ],
-    },
-    {
-        "id": "07",
-        "title": "JavaScript",
-        "description": "A linguagem da web, do básico ao assíncrono",
-        "duration_hours": 16,
-        "lessons": [
-            {"id": "07-01", "title": "Variáveis e tipos", "reading_time_minutes": 12, "has_exercise": True},
-            {"id": "07-02", "title": "Operadores e condicionais", "reading_time_minutes": 12, "has_exercise": True},
-            {"id": "07-03", "title": "Loops", "reading_time_minutes": 12, "has_exercise": True},
-            {"id": "07-04", "title": "Funções", "reading_time_minutes": 14, "has_exercise": True},
-            {"id": "07-05", "title": "Arrays e objetos", "reading_time_minutes": 14, "has_exercise": True},
-            {"id": "07-06", "title": "DOM — manipulando elementos", "reading_time_minutes": 16, "has_exercise": True},
-            {"id": "07-07", "title": "Eventos e addEventListener", "reading_time_minutes": 14, "has_exercise": True},
-            {"id": "07-08", "title": "Formulários e validação", "reading_time_minutes": 14, "has_exercise": True},
-            {"id": "07-09", "title": "ES6+ — Arrow functions, destructuring, spread", "reading_time_minutes": 16, "has_exercise": True},
-            {"id": "07-10", "title": "map, filter, reduce, find", "reading_time_minutes": 16, "has_exercise": True},
-            {"id": "07-11", "title": "Promises e async/await", "reading_time_minutes": 18, "has_exercise": True},
-            {"id": "07-12", "title": "fetch e consumo de APIs", "reading_time_minutes": 16, "has_exercise": True},
-            {"id": "07-13", "title": "LocalStorage e SessionStorage", "reading_time_minutes": 12, "has_exercise": True},
-            {"id": "07-14", "title": "Projeto: To-do List", "reading_time_minutes": 30, "has_exercise": True},
-        ],
-    },
-    {
         "id": "08",
-        "title": "TypeScript",
-        "description": "JavaScript com tipos, do básico ao avançado",
-        "duration_hours": 8,
+        "title": "Git e GitHub",
+        "description": "Salve, versione e publique seus projetos",
+        "duration_hours": 3,
         "lessons": [
-            {"id": "08-01", "title": "Por que TypeScript?", "reading_time_minutes": 10, "has_exercise": False},
-            {"id": "08-02", "title": "Tipos primitivos e anotações", "reading_time_minutes": 12, "has_exercise": True},
-            {"id": "08-03", "title": "Interfaces e type aliases", "reading_time_minutes": 14, "has_exercise": True},
-            {"id": "08-04", "title": "Union types e literal types", "reading_time_minutes": 12, "has_exercise": True},
-            {"id": "08-05", "title": "Generics", "reading_time_minutes": 16, "has_exercise": True},
-            {"id": "08-06", "title": "Enums", "reading_time_minutes": 10, "has_exercise": True},
-            {"id": "08-07", "title": "Tipagem de funções e objetos", "reading_time_minutes": 14, "has_exercise": True},
-            {"id": "08-08", "title": "unknown, any e por que evitar", "reading_time_minutes": 12, "has_exercise": False},
-            {"id": "08-09", "title": "Utility Types", "reading_time_minutes": 14, "has_exercise": True},
-            {"id": "08-10", "title": "Projeto: Refatorando JS para TS", "reading_time_minutes": 20, "has_exercise": True},
+            {"id": "08-01", "title": "Git e GitHub: o que são e por que usar", "reading_time_minutes": 14, "has_exercise": True},
+            {"id": "08-02", "title": "Terminal sem medo e configurando o Git", "reading_time_minutes": 16, "has_exercise": True},
+            {"id": "08-03", "title": "Seu primeiro repositório", "reading_time_minutes": 18, "has_exercise": True},
+            {"id": "08-04", "title": "Conectando ao GitHub", "reading_time_minutes": 18, "has_exercise": True},
+            {"id": "08-05", "title": "Branches", "reading_time_minutes": 18, "has_exercise": True},
+            {"id": "08-06", "title": "Pull Requests", "reading_time_minutes": 16, "has_exercise": True},
+            {"id": "08-07", "title": "Resolvendo conflitos", "reading_time_minutes": 16, "has_exercise": True},
+            {"id": "08-08", "title": ".gitignore e README", "reading_time_minutes": 16, "has_exercise": True},
+            {"id": "08-09", "title": "GitHub Pages", "reading_time_minutes": 18, "has_exercise": True},
+            {"id": "08-10", "title": "Boas práticas de commit", "reading_time_minutes": 14, "has_exercise": True},
         ],
     },
-    {
-        "id": "09",
-        "title": "React",
-        "description": "Construindo interfaces modernas com React + TypeScript",
-        "duration_hours": 18,
-        "lessons": [
-            {"id": "09-01", "title": "Introdução ao React e Vite", "reading_time_minutes": 12, "has_exercise": False},
-            {"id": "09-02", "title": "Componentes e JSX/TSX", "reading_time_minutes": 14, "has_exercise": True},
-            {"id": "09-03", "title": "Props", "reading_time_minutes": 12, "has_exercise": True},
-            {"id": "09-04", "title": "State com useState", "reading_time_minutes": 14, "has_exercise": True},
-            {"id": "09-05", "title": "Eventos e formulários", "reading_time_minutes": 14, "has_exercise": True},
-            {"id": "09-06", "title": "Renderização condicional e listas", "reading_time_minutes": 12, "has_exercise": True},
-            {"id": "09-07", "title": "useEffect", "reading_time_minutes": 16, "has_exercise": True},
-            {"id": "09-08", "title": "useMemo e useCallback", "reading_time_minutes": 14, "has_exercise": True},
-            {"id": "09-09", "title": "useRef e hooks personalizados", "reading_time_minutes": 14, "has_exercise": True},
-            {"id": "09-10", "title": "Organização de pastas e arquitetura", "reading_time_minutes": 12, "has_exercise": False},
-            {"id": "09-11", "title": "React Router — rotas e protegidas", "reading_time_minutes": 16, "has_exercise": True},
-            {"id": "09-12", "title": "Consumindo APIs", "reading_time_minutes": 16, "has_exercise": True},
-            {"id": "09-13", "title": "Context API", "reading_time_minutes": 14, "has_exercise": True},
-            {"id": "09-14", "title": "Projeto: Dashboard", "reading_time_minutes": 30, "has_exercise": True},
-        ],
-    },
-    {
-        "id": "10",
-        "title": "MongoDB",
-        "description": "Banco de dados NoSQL, do conceito ao uso real",
-        "duration_hours": 8,
-        "lessons": [
-            {"id": "10-01", "title": "SQL vs NoSQL", "reading_time_minutes": 10, "has_exercise": False},
-            {"id": "10-02", "title": "Database, Collection, Document", "reading_time_minutes": 12, "has_exercise": False},
-            {"id": "10-03", "title": "CRUD — Create, Read, Update, Delete", "reading_time_minutes": 16, "has_exercise": True},
-            {"id": "10-04", "title": "Queries, filtros e operadores", "reading_time_minutes": 14, "has_exercise": True},
-            {"id": "10-05", "title": "Arrays e objetos aninhados", "reading_time_minutes": 12, "has_exercise": True},
-            {"id": "10-06", "title": "Índices e performance", "reading_time_minutes": 12, "has_exercise": False},
-            {"id": "10-07", "title": "Aggregation", "reading_time_minutes": 16, "has_exercise": True},
-            {"id": "10-08", "title": "MongoDB + Python (PyMongo)", "reading_time_minutes": 18, "has_exercise": True},
-        ],
-    },
-    {
-        "id": "11",
-        "title": "Full Stack — Integração",
-        "description": "React + FastAPI + MongoDB na prática",
-        "duration_hours": 6,
-        "lessons": [
-            {"id": "11-01", "title": "Arquitetura React → FastAPI → MongoDB", "reading_time_minutes": 14, "has_exercise": False},
-            {"id": "11-02", "title": "Autenticação completa com JWT", "reading_time_minutes": 20, "has_exercise": True},
-            {"id": "11-03", "title": "CRUD completo integrado", "reading_time_minutes": 22, "has_exercise": True},
-            {"id": "11-04", "title": "Projeto final: SaaS completo", "reading_time_minutes": 30, "has_exercise": True},
-        ],
-    },
-    {
-        "id": "12",
-        "title": "Deploy",
-        "description": "Colocando o projeto no ar gratuitamente",
-        "duration_hours": 4,
-        "lessons": [
-            {"id": "12-01", "title": "Git e GitHub essenciais", "reading_time_minutes": 14, "has_exercise": False},
-            {"id": "12-02", "title": "Deploy do frontend (Vercel)", "reading_time_minutes": 12, "has_exercise": False},
-            {"id": "12-03", "title": "Deploy do backend (Render/Railway)", "reading_time_minutes": 12, "has_exercise": False},
-            {"id": "12-04", "title": "MongoDB Atlas em produção", "reading_time_minutes": 10, "has_exercise": False},
-        ],
-    },
+    # ======================================================================
+    # CONTEÚDO ESTACIONADO (fora do curso ativo)
+    # ----------------------------------------------------------------------
+    # Os módulos 06 (HTML + CSS), 07 (JavaScript) e 12 (Deploy) abaixo estão
+    # COMENTADOS de propósito. Nada foi apagado: os arquivos
+    # lessons_module_06.py e lessons_module_07.py continuam na pasta
+    # lessons_content/, só não estão sendo usados.
+    #
+    # Como REATIVAR um módulo:
+    #   1. Aqui no analytics.py: selecione TODAS as linhas do bloco do módulo
+    #      (de '# {' até '# },') e aperte Ctrl + / (VS Code) para tirar os #.
+    #   2. No lessons_content/__init__.py: faça o mesmo com o import do módulo
+    #      e com as linhas dele no dicionário LESSONS.
+    #   3. Reinicie o servidor.
+    #
+    # A ORDEM dos blocos nesta lista é a ordem que o aluno vê. Se reativar o
+    # 06 e o 07, eles aparecem logo depois do 08 (Git e GitHub).
+    # ======================================================================
+    # --- [ESTACIONADO] Módulo 06 — HTML + CSS -----------------------------
+    # {
+    #     "id": "06",
+    #     "title": "HTML + CSS",
+    #     "description": "Estrutura e estilo das páginas web",
+    #     "duration_hours": 14,
+    #     "lessons": [
+    #         {"id": "06-01", "title": "Estrutura HTML", "reading_time_minutes": 12, "has_exercise": True},
+    #         {"id": "06-02", "title": "Tags principais e textos", "reading_time_minutes": 12, "has_exercise": True},
+    #         {"id": "06-03", "title": "Links, imagens e listas", "reading_time_minutes": 12, "has_exercise": True},
+    #         {"id": "06-04", "title": "Tabelas e formulários", "reading_time_minutes": 14, "has_exercise": True},
+    #         {"id": "06-05", "title": "HTML semântico", "reading_time_minutes": 12, "has_exercise": True},
+    #         {"id": "06-06", "title": "Acessibilidade", "reading_time_minutes": 10, "has_exercise": False},
+    #         {"id": "06-07", "title": "CSS: seletores e box model", "reading_time_minutes": 14, "has_exercise": True},
+    #         {"id": "06-08", "title": "Flexbox", "reading_time_minutes": 16, "has_exercise": True},
+    #         {"id": "06-09", "title": "Grid", "reading_time_minutes": 16, "has_exercise": True},
+    #         {"id": "06-10", "title": "Cores, tipografia e sombras", "reading_time_minutes": 12, "has_exercise": True},
+    #         {"id": "06-11", "title": "Gradientes e transições", "reading_time_minutes": 12, "has_exercise": True},
+    #         {"id": "06-12", "title": "Animações CSS", "reading_time_minutes": 14, "has_exercise": True},
+    #         {"id": "06-13", "title": "Responsividade e media queries", "reading_time_minutes": 16, "has_exercise": True},
+    #         {"id": "06-14", "title": "Projeto: Landing Page", "reading_time_minutes": 30, "has_exercise": True},
+    #     ],
+    # },
+    # --- [ESTACIONADO] Módulo 07 — JavaScript -----------------------------
+    # {
+    #     "id": "07",
+    #     "title": "JavaScript",
+    #     "description": "A linguagem da web, do básico ao assíncrono",
+    #     "duration_hours": 16,
+    #     "lessons": [
+    #         {"id": "07-01", "title": "Variáveis e tipos", "reading_time_minutes": 12, "has_exercise": True},
+    #         {"id": "07-02", "title": "Operadores e condicionais", "reading_time_minutes": 12, "has_exercise": True},
+    #         {"id": "07-03", "title": "Loops", "reading_time_minutes": 12, "has_exercise": True},
+    #         {"id": "07-04", "title": "Funções", "reading_time_minutes": 14, "has_exercise": True},
+    #         {"id": "07-05", "title": "Arrays e objetos", "reading_time_minutes": 14, "has_exercise": True},
+    #         {"id": "07-06", "title": "DOM — manipulando elementos", "reading_time_minutes": 16, "has_exercise": True},
+    #         {"id": "07-07", "title": "Eventos e addEventListener", "reading_time_minutes": 14, "has_exercise": True},
+    #         {"id": "07-08", "title": "Formulários e validação", "reading_time_minutes": 14, "has_exercise": True},
+    #         {"id": "07-09", "title": "ES6+ — Arrow functions, destructuring, spread", "reading_time_minutes": 16, "has_exercise": True},
+    #         {"id": "07-10", "title": "map, filter, reduce, find", "reading_time_minutes": 16, "has_exercise": True},
+    #         {"id": "07-11", "title": "Promises e async/await", "reading_time_minutes": 18, "has_exercise": True},
+    #         {"id": "07-12", "title": "fetch e consumo de APIs", "reading_time_minutes": 16, "has_exercise": True},
+    #         {"id": "07-13", "title": "LocalStorage e SessionStorage", "reading_time_minutes": 12, "has_exercise": True},
+    #         {"id": "07-14", "title": "Projeto: To-do List", "reading_time_minutes": 30, "has_exercise": True},
+    #     ],
+    # },
+    # --- [ESTACIONADO] Módulo 12 — Deploy ---------------------------------
+    # Este módulo ainda não tem conteúdo escrito (falta criar o arquivo
+    # lessons_module_12.py). Só reative depois que ele existir, senão as
+    # lições vão aparecer na trilha, mas não vão abrir.
+    # {
+    #     "id": "12",
+    #     "title": "Deploy",
+    #     "description": "Colocando o projeto no ar gratuitamente",
+    #     "duration_hours": 4,
+    #     "lessons": [
+    #         {"id": "12-01", "title": "Deploy do frontend (Vercel)", "reading_time_minutes": 12, "has_exercise": False},
+    #         {"id": "12-02", "title": "Deploy do backend (Railway)", "reading_time_minutes": 12, "has_exercise": False},
+    #         {"id": "12-03", "title": "Projeto final: landing page animada no ar", "reading_time_minutes": 30, "has_exercise": True},
+    #     ],
+    # },
 ]
 
 ACHIEVEMENTS_CATALOG = [
