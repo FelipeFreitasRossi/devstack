@@ -3,6 +3,7 @@ from pydantic import BaseModel, EmailStr, Field
 from datetime import datetime
 from app.auth import hash_password, verify_password, create_access_token
 from app.database import users_collection
+from app.signup import create_signup_token
 
 router = APIRouter()
 
@@ -15,31 +16,18 @@ class LoginRequest(BaseModel):
     email: EmailStr
     password: str
 
-@router.post("/register", status_code=status.HTTP_201_CREATED)
+@router.post("/register")
 async def register(data: RegisterRequest):
     if users_collection.find_one({"email": data.email}):
         raise HTTPException(status_code=400, detail="Email já cadastrado")
 
-    user = {
-        "name": data.name,
-        "email": data.email,
-        "password_hash": hash_password(data.password),
-        "paid": False,
-        "created_at": datetime.utcnow(),
-    }
-    result = users_collection.insert_one(user)
-
-    token = create_access_token({"sub": data.email})
-    return {
-        "access_token": token,
-        "token_type": "bearer",
-        "user": {
-            "id": str(result.inserted_id),
-            "name": data.name,
-            "email": data.email,
-            "paid": False,
-        },
-    }
+    # NÃO salva no banco. Só valida e guarda os dados (senha já em hash) num
+    # token assinado. O usuário só é criado depois do pagamento confirmado
+    # (veja app/signup.py e routes/payments.py).
+    signup_token = create_signup_token(
+        data.name, data.email, hash_password(data.password)
+    )
+    return {"signup_token": signup_token}
 
 @router.post("/login")
 async def login(data: LoginRequest):
