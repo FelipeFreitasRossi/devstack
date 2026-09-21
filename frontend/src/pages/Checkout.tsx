@@ -7,9 +7,10 @@ import {
   Loader2,
   CreditCard as CreditCardIcon,
   AlertCircle,
+  ArrowLeft,
 } from 'lucide-react';
 import { CardPayment, initMercadoPago } from '@mercadopago/sdk-react';
-import { AuthLayout } from '../components/layout/AuthLayout';
+import { AuthLayout } from '../components/layout/AuthLayout.tsx';
 import { Button } from '../components/ui/Button';
 import { useAuth } from '../contexts/AuthContext';
 import { api } from '../services/api';
@@ -17,6 +18,18 @@ import { api } from '../services/api';
 initMercadoPago('TEST-42eb3936-b296-47cd-bdf0-5346ff3535f6');
 
 type PaymentMethod = 'pix' | 'credit_card';
+
+// Resposta quando o pagamento de um CADASTRO NOVO é confirmado (o backend acabou de criar o usuário)
+interface SignupCompleted {
+  paid: boolean;
+  access_token?: string;
+  user?: {
+    id: string;
+    name: string;
+    email: string;
+    paid: boolean;
+  };
+}
 
 interface PaymentData {
   order_id: string;
@@ -58,9 +71,31 @@ async function copyToClipboard(text: string): Promise<boolean> {
   }
 }
 
+// Seta discreta para voltar à etapa anterior (sem recarregar a página)
+function BackButton({ onClick, label }: { onClick: () => void; label: string }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={label}
+      className="inline-flex items-center gap-1.5 -ml-1 px-1 py-1 rounded-md text-sm text-text-muted hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 transition-colors"
+    >
+      <ArrowLeft size={18} />
+      Voltar
+    </button>
+  );
+}
+
 export function Checkout() {
   const navigate = useNavigate();
-  const { user, loading: authLoading, updateUser } = useAuth();
+  const {
+    user,
+    loading: authLoading,
+    updateUser,
+    pendingSignup,
+    completeSignup,
+  } = useAuth();
+  const signupToken = pendingSignup?.signupToken;
   const [payment, setPayment] = useState<PaymentData | null>(null);
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod>('pix');
   const [loading, setLoading] = useState(false);
@@ -70,10 +105,17 @@ export function Checkout() {
 
   // Se já pagou, redireciona para a área do aluno
   useEffect(() => {
-    if (user?.paid) {
+    if (user?.paid && !pendingSignup) {
       navigate('/minha-area');
     }
-  }, [user, navigate]);
+  }, [user, pendingSignup, navigate]);
+
+  // Sem cadastro em andamento e sem login: não há o que pagar, volta para o cadastro
+  useEffect(() => {
+    if (!authLoading && !user && !pendingSignup && !localStorage.getItem('token')) {
+      navigate('/cadastro');
+    }
+  }, [authLoading, user, pendingSignup, navigate]);
 
   // Polling de status (exceto cartão, que já retorna pago)
   useEffect(() => {
@@ -81,10 +123,18 @@ export function Checkout() {
 
     const interval = setInterval(async () => {
       try {
-        const result = (await api.checkPaymentStatus(payment.order_id)) as {
-          paid: boolean;
-        };
-        if (result.paid && user) {
+        const result = (await api.checkPaymentStatus(
+          payment.order_id,
+          signupToken
+        )) as SignupCompleted;
+        if (result.paid && signupToken && result.access_token && result.user) {
+          // Cadastro novo: pagamento confirmado, usuário criado pelo backend
+          completeSignup({
+            access_token: result.access_token,
+            user: result.user,
+          });
+          navigate('/minha-area');
+        } else if (result.paid && user) {
           updateUser({ ...user, paid: true });
           navigate('/minha-area');
         }
@@ -94,13 +144,16 @@ export function Checkout() {
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [payment, user, updateUser, navigate]);
+  }, [payment, user, signupToken, updateUser, completeSignup, navigate]);
 
   const handleGeneratePayment = async () => {
     setLoading(true);
     setError('');
     try {
-      const data = (await api.createPayment(selectedMethod)) as PaymentData;
+      const data = (await api.createPayment(
+        selectedMethod,
+        signupToken
+      )) as PaymentData;
       setPayment(data);
     } catch (err) {
       setError(
@@ -134,9 +187,17 @@ export function Checkout() {
         token: formData.token,
         payment_method_id: formData.payment_method_id,
         installments: formData.installments,
-      })) as { paid: boolean; status: string };
+        signup_token: signupToken,
+      })) as SignupCompleted & { status: string };
 
-      if (result.paid && user) {
+      if (result.paid && signupToken && result.access_token && result.user) {
+        // Cadastro novo: pagamento aprovado, usuário criado pelo backend
+        completeSignup({
+          access_token: result.access_token,
+          user: result.user,
+        });
+        navigate('/minha-area');
+      } else if (result.paid && user) {
         updateUser({ ...user, paid: true });
         navigate('/minha-area');
       } else {
@@ -157,6 +218,10 @@ export function Checkout() {
     setError('');
   };
 
+  // Volta para a etapa anterior (Cadastro) sem recarregar a página.
+  // Os dados continuam guardados em memória e o formulário abre preenchido.
+  const handleBackToCadastro = () => navigate('/cadastro');
+
   if (authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-surface">
@@ -171,10 +236,20 @@ export function Checkout() {
       <AuthLayout
         title="Finalize sua compra"
         subtitle="Acesso vitalício por apenas R$19,99"
+        scrollable
       >
-        <div className="space-y-6">
-          <div className="text-center py-6">
-            <div className="text-5xl font-bold text-brand-500 mb-2">
+        <div className="space-y-4 sm:space-y-6">
+          {pendingSignup && (
+            <div className="-mb-2">
+              <BackButton
+                onClick={handleBackToCadastro}
+                label="Voltar para o cadastro"
+              />
+            </div>
+          )}
+
+          <div className="text-center py-2 sm:py-6">
+            <div className="text-4xl sm:text-5xl font-bold text-brand-500 mb-2">
               R$ 19,99
             </div>
             <p className="text-text-secondary text-sm">
@@ -273,10 +348,18 @@ export function Checkout() {
       <AuthLayout
         title="Pagamento com cartão"
         subtitle="Acesso vitalício por R$19,99"
+        scrollable
       >
-        <div className="space-y-6">
-          <div className="text-center py-4">
-            <div className="text-4xl font-bold text-brand-500 mb-1">
+        <div className="space-y-4 sm:space-y-6">
+          <div className="-mb-2">
+            <BackButton
+              onClick={resetMethod}
+              label="Voltar para a escolha da forma de pagamento"
+            />
+          </div>
+
+          <div className="text-center py-1 sm:py-4">
+            <div className="text-3xl sm:text-4xl font-bold text-brand-500 mb-1">
               R$ 19,99
             </div>
             <p className="text-text-secondary text-sm">
@@ -291,11 +374,14 @@ export function Checkout() {
             </div>
           )}
 
-          <CardPayment
-            initialization={{ amount: 19.99 }}
-            onSubmit={handleCardSubmit}
-            onError={() => setError('Erro ao carregar formulário de cartão')}
-          />
+          {/* min-w-0 + w-full: o formulário do Mercado Pago se ajusta à largura do celular */}
+          <div className="w-full min-w-0">
+            <CardPayment
+              initialization={{ amount: 19.99 }}
+              onSubmit={handleCardSubmit}
+              onError={() => setError('Erro ao carregar formulário de cartão')}
+            />
+          </div>
 
           <button
             onClick={resetMethod}
@@ -313,18 +399,26 @@ export function Checkout() {
     <AuthLayout
       title="Aguardando pagamento"
       subtitle="Finalize o pagamento para liberar o acesso"
+      scrollable
     >
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
+        <div className="-mb-1">
+          <BackButton
+            onClick={resetMethod}
+            label="Voltar para a escolha da forma de pagamento"
+          />
+        </div>
+
         {payment?.qr_code_base64 && (
           <div className="text-center">
-            <p className="text-sm text-text-secondary mb-4">
+            <p className="text-sm text-text-secondary mb-3 sm:mb-4">
               Escaneie o QR Code com o app do seu banco
             </p>
-            <div className="bg-white p-4 rounded-xl inline-block">
+            <div className="bg-white p-3 sm:p-4 rounded-xl inline-block">
               <img
                 src={`data:image/png;base64,${payment.qr_code_base64}`}
                 alt="QR Code Pix"
-                className="w-48 h-48 md:w-56 md:h-56"
+                className="w-40 h-40 sm:w-48 sm:h-48 md:w-56 md:h-56"
               />
             </div>
           </div>
@@ -345,7 +439,7 @@ export function Checkout() {
 
           {payment?.qr_code && (
             <div className="mb-3">
-              <div className="p-3 rounded-lg bg-surface border border-border">
+              <div className="p-3 rounded-lg bg-surface border border-border max-h-20 sm:max-h-none overflow-y-auto">
                 <code className="block text-[10px] text-text-muted break-all font-mono leading-relaxed">
                   {payment.qr_code}
                 </code>
@@ -355,7 +449,7 @@ export function Checkout() {
 
           <button
             onClick={() => handleCopy(payment?.qr_code)}
-            className={`w-full p-4 rounded-lg border transition-all duration-200 flex items-center justify-center gap-2 ${
+            className={`w-full p-3 sm:p-4 rounded-lg border transition-all duration-200 flex items-center justify-center gap-2 ${
               copied
                 ? 'bg-brand-500/10 border-brand-500'
                 : copyError
@@ -394,7 +488,7 @@ export function Checkout() {
           )}
         </div>
 
-        <div className="p-4 rounded-lg bg-surface border border-border text-center">
+        <div className="p-3 sm:p-4 rounded-lg bg-surface border border-border text-center">
           <p className="text-xs text-text-muted mb-1">Valor a pagar</p>
           <p className="text-2xl font-bold text-brand-500">R$ 19,99</p>
           <p className="text-xs text-text-muted mt-1">

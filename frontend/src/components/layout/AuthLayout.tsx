@@ -14,6 +14,8 @@ interface AuthLayoutProps {
   subtitle?: string;
   /** Define o canto do mascote. Padrão: 'right' */
   mascotSide?: 'left' | 'right';
+  /** Telas altas (ex.: pagamento): o conteúdo rola em vez de ser cortado e o mascote some no celular. */
+  scrollable?: boolean;
 }
 
 export function AuthLayout({
@@ -21,6 +23,7 @@ export function AuthLayout({
   title,
   subtitle,
   mascotSide = 'right',
+  scrollable = false,
 }: AuthLayoutProps) {
   const { containerRef, direction } = useAuthTransition();
   const glowRef = useRef<HTMLDivElement>(null);
@@ -150,10 +153,10 @@ export function AuthLayout({
               transform: isLeft ? 'scaleX(-1)' : 'none',
             }}
           >
-            <div className="hidden sm:block">
+            <div className={scrollable ? 'hidden md:block' : 'hidden sm:block'}>
               <SlothMascot size={280} anchor="bottom" />
             </div>
-            <div className="sm:hidden">
+            <div className={scrollable ? 'hidden' : 'sm:hidden'}>
               <SlothMascot size={150} anchor="bottom" />
             </div>
           </div>
@@ -178,8 +181,12 @@ export function AuthLayout({
       </header>
 
       {/* ===== CONTEÚDO (centralizado, sem scroll) ===== */}
-      <main className="relative z-10 flex-1 flex items-center justify-center px-4 pb-4 sm:pb-8 min-h-0">
-        <div className="w-full max-w-md">
+      <main
+        className={`relative z-10 flex-1 flex justify-center px-4 pb-4 sm:pb-8 min-h-0 ${
+          scrollable ? 'overflow-y-auto' : 'items-center'
+        }`}
+      >
+        <div className={`w-full max-w-md ${scrollable ? 'my-auto' : ''}`}>
           <div ref={cardRef} className="opacity-0">
             {/* Título */}
             <div className="text-center mb-4 sm:mb-6 md:mb-8">

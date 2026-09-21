@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AuthLayout } from '../components/layout/AuthLayout';
+import { AuthLayout } from '../components/layout/AuthLayout.tsx';
 import { Input } from '../components/ui/Input';
 import { PasswordInput } from '../components/ui/PasswordInput';
 import { Button } from '../components/ui/Button';

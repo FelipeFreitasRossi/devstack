@@ -2,6 +2,7 @@ import { Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { AuthTransitionProvider } from './contexts/AuthTransitionContext';
 import { Layout } from './components/layout/Layout';
+import { ScrollToTop } from './components/layout/ScrollToTop';
 import { Home } from './pages/Home';
 import { Login } from './pages/Login';
 import { Cadastro } from './pages/Cadastro';
@@ -17,6 +18,7 @@ function App() {
   return (
     <AuthProvider>
       <AuthTransitionProvider>
+        <ScrollToTop />
         <Routes>
           <Route path="/" element={<Layout><Home /></Layout>} />
           <Route path="/login" element={<Login />} />

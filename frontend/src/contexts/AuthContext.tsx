@@ -9,11 +9,21 @@ interface User {
   paid: boolean;
 }
 
+// Cadastro que ainda NÃO está no banco: fica só na memória até o pagamento ser confirmado.
+interface PendingSignup {
+  name: string;
+  email: string;
+  password: string; // só em memória (some ao recarregar a página); nunca vai para o localStorage
+  signupToken: string;
+}
+
 interface AuthContextType {
   user: User | null;
   loading: boolean;
+  pendingSignup: PendingSignup | null;
   login: (email: string, password: string) => Promise<void>;
   register: (name: string, email: string, password: string) => Promise<void>;
+  completeSignup: (data: { access_token: string; user: User }) => void;
   logout: () => void;
   updateUser: (user: User) => void;
 }
@@ -23,6 +33,7 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [pendingSignup, setPendingSignup] = useState<PendingSignup | null>(null);
 
   // Restaura sessão ao carregar
   useEffect(() => {
@@ -49,15 +60,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
     localStorage.setItem('token', data.access_token);
     setUser(data.user);
+    setPendingSignup(null);
   };
 
+  // Não cria conta nem faz login: só valida os dados e guarda em memória.
+  // A conta só passa a existir depois do pagamento confirmado (completeSignup).
   const register = async (name: string, email: string, password: string) => {
     const data = (await api.register(name, email, password)) as {
-      access_token: string;
-      user: User;
+      signup_token: string;
     };
+    setPendingSignup({ name, email, password, signupToken: data.signup_token });
+  };
+
+  // Chamada quando o pagamento é confirmado e o backend já criou o usuário.
+  const completeSignup = (data: { access_token: string; user: User }) => {
     localStorage.setItem('token', data.access_token);
     setUser(data.user);
+    setPendingSignup(null);
   };
 
   const logout = () => {
@@ -69,7 +88,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, loading, login, register, logout, updateUser }}
+      value={{
+        user,
+        loading,
+        pendingSignup,
+        login,
+        register,
+        completeSignup,
+        logout,
+        updateUser,
+      }}
     >
       {children}
     </AuthContext.Provider>

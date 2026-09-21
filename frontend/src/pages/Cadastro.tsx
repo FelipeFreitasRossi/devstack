@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AuthLayout } from '../components/layout/AuthLayout';
+import { AuthLayout } from '../components/layout/AuthLayout.tsx';
 import { Input } from '../components/ui/Input';
 import { PasswordInput } from '../components/ui/PasswordInput';
 import { Button } from '../components/ui/Button';
@@ -10,12 +10,15 @@ import { useAuthTransition } from '../contexts/AuthTransitionContext';
 
 export function Cadastro() {
   const navigate = useNavigate();
-  const { register } = useAuth();
+  const { register, pendingSignup } = useAuth();
   const { goToLogin } = useAuthTransition();
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  // Se o usuário voltou do pagamento, os campos já vêm preenchidos
+  const [name, setName] = useState(pendingSignup?.name ?? '');
+  const [email, setEmail] = useState(pendingSignup?.email ?? '');
+  const [password, setPassword] = useState(pendingSignup?.password ?? '');
+  const [confirmPassword, setConfirmPassword] = useState(
+    pendingSignup?.password ?? ''
+  );
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
