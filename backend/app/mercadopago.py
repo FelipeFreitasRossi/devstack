@@ -23,7 +23,7 @@ def _get_payer_email(user: dict) -> str:
 async def create_payment_order(user: dict, method: str) -> dict:
     """
     Cria uma order no Mercado Pago para o método escolhido.
-    
+
     Métodos suportados:
     - pix: QR Code Pix (APENAS produção)
     - boleto: Boleto bancário (APENAS produção)
@@ -73,60 +73,6 @@ async def create_payment_order(user: dict, method: str) -> dict:
 
         # Log estruturado
         print(f"[MP] {method.upper()} | Status: {response.status_code} | Order: {data.get('id', 'N/A')}")
-
-        return {"status_code": response.status_code, "data": data}
-
-    except httpx.TimeoutException:
-        return {
-            "status_code": 504,
-            "data": {"error": "Timeout ao conectar com Mercado Pago"},
-        }
-    except Exception as e:
-        return {
-            "status_code": 500,
-            "data": {"error": f"Erro inesperado: {str(e)}"},
-        }
-
-
-async def create_card_order(
-    user: dict, token: str, payment_method_id: str, installments: int
-) -> dict:
-    """Cria uma order de pagamento com cartão no Mercado Pago."""
-    payload = {
-        "type": "online",
-        "external_reference": str(user["_id"]),
-        "total_amount": "19.99",
-        "processing_mode": "automatic",
-        "transactions": {
-            "payments": [
-                {
-                    "amount": "19.99",
-                    "payment_method": {
-                        "id": payment_method_id,
-                        "type": "credit_card",
-                        "token": token,
-                        "installments": installments,
-                    },
-                }
-            ]
-        },
-        "payer": {
-            "email": _get_payer_email(user),
-        },
-    }
-
-    headers = {
-        "Authorization": f"Bearer {MP_ACCESS_TOKEN}",
-        "Content-Type": "application/json",
-        "X-Idempotency-Key": str(uuid.uuid4()),
-    }
-
-    try:
-        async with httpx.AsyncClient(timeout=30.0) as client:
-            response = await client.post(MP_API_URL, json=payload, headers=headers)
-
-        data = response.json()
-        print(f"[MP] CARD | Status: {response.status_code} | Order: {data.get('id', 'N/A')}")
 
         return {"status_code": response.status_code, "data": data}
 

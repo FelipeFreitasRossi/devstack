@@ -5,19 +5,15 @@ import {
   Copy,
   Check,
   Loader2,
-  CreditCard as CreditCardIcon,
   AlertCircle,
   ArrowLeft,
 } from 'lucide-react';
-import { CardPayment, initMercadoPago } from '@mercadopago/sdk-react';
 import { AuthLayout } from '../components/layout/AuthLayout.tsx';
 import { Button } from '../components/ui/Button';
 import { useAuth } from '../contexts/AuthContext';
 import { api } from '../services/api';
 
-initMercadoPago('TEST-42eb3936-b296-47cd-bdf0-5346ff3535f6');
-
-type PaymentMethod = 'pix' | 'credit_card';
+type PaymentMethod = 'pix';
 
 // Resposta quando o pagamento de um CADASTRO NOVO é confirmado (o backend acabou de criar o usuário)
 interface SignupCompleted {
@@ -41,7 +37,6 @@ interface PaymentData {
 
 const METHOD_LABELS: Record<PaymentMethod, string> = {
   pix: 'Pix',
-  credit_card: 'Cartão',
 };
 
 // Função de cópia com fallback (funciona em qualquer navegador)
@@ -117,9 +112,9 @@ export function Checkout() {
     }
   }, [authLoading, user, pendingSignup, navigate]);
 
-  // Polling de status (exceto cartão, que já retorna pago)
+  // Polling de status para confirmar o pagamento Pix
   useEffect(() => {
-    if (!payment?.order_id || payment.method === 'credit_card') return;
+    if (!payment?.order_id) return;
 
     const interval = setInterval(async () => {
       try {
@@ -180,38 +175,6 @@ export function Checkout() {
     }
   };
 
-  const handleCardSubmit = async (formData: any) => {
-    setError('');
-    try {
-      const result = (await api.createCardPayment({
-        token: formData.token,
-        payment_method_id: formData.payment_method_id,
-        installments: formData.installments,
-        signup_token: signupToken,
-      })) as SignupCompleted & { status: string };
-
-      if (result.paid && signupToken && result.access_token && result.user) {
-        // Cadastro novo: pagamento aprovado, usuário criado pelo backend
-        completeSignup({
-          access_token: result.access_token,
-          user: result.user,
-        });
-        navigate('/minha-area');
-      } else if (result.paid && user) {
-        updateUser({ ...user, paid: true });
-        navigate('/minha-area');
-      } else {
-        setError(
-          'Pagamento não aprovado. Verifique os dados e tente novamente.'
-        );
-      }
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : 'Erro ao processar pagamento'
-      );
-    }
-  };
-
   const resetMethod = () => {
     setSelectedMethod('pix');
     setPayment(null);
@@ -230,8 +193,8 @@ export function Checkout() {
     );
   }
 
-  // ============ TELA INICIAL (SELEÇÃO) ============
-  if (!payment && selectedMethod !== 'credit_card') {
+  // ============ TELA INICIAL (PIX) ============
+  if (!payment) {
     return (
       <AuthLayout
         title="Finalize sua compra"
@@ -272,43 +235,15 @@ export function Checkout() {
             </div>
           </div>
 
-          <div>
-            <p className="text-sm font-medium text-text-primary mb-3">
-              Escolha a forma de pagamento
+          {/* Forma de pagamento (apenas Pix) */}
+          <div className="p-4 rounded-lg border border-brand-500 bg-brand-500/10 text-center">
+            <QrCode size={22} className="mx-auto mb-2 text-brand-500" />
+            <span className="text-sm font-medium text-brand-500">
+              Pagamento via Pix
+            </span>
+            <p className="text-xs text-text-muted mt-1">
+              QR Code gerado na hora
             </p>
-            <div className="grid grid-cols-2 gap-3">
-              {(['pix', 'credit_card'] as PaymentMethod[]).map((method) => {
-                const Icon = method === 'pix' ? QrCode : CreditCardIcon;
-                const isSelected = selectedMethod === method;
-
-                return (
-                  <button
-                    key={method}
-                    type="button"
-                    onClick={() => setSelectedMethod(method)}
-                    className={`p-4 rounded-lg border text-center transition-all duration-200 ${
-                      isSelected
-                        ? 'border-brand-500 bg-brand-500/10'
-                        : 'border-border bg-surface-elevated hover:border-border-strong'
-                    }`}
-                  >
-                    <Icon
-                      size={22}
-                      className={`mx-auto mb-2 ${
-                        isSelected ? 'text-brand-500' : 'text-text-secondary'
-                      }`}
-                    />
-                    <span
-                      className={`text-sm font-medium ${
-                        isSelected ? 'text-brand-500' : 'text-text-secondary'
-                      }`}
-                    >
-                      {METHOD_LABELS[method]}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
           </div>
 
           {error && (
@@ -330,65 +265,13 @@ export function Checkout() {
                 Gerando...
               </>
             ) : (
-              <>Gerar pagamento via {METHOD_LABELS[selectedMethod]}</>
+              <>Gerar pagamento via Pix</>
             )}
           </Button>
 
           <p className="text-center text-xs text-text-muted">
             Pagamento seguro · Mercado Pago
           </p>
-        </div>
-      </AuthLayout>
-    );
-  }
-
-  // ============ CARTÃO (BRICK) ============
-  if (selectedMethod === 'credit_card' && !payment) {
-    return (
-      <AuthLayout
-        title="Pagamento com cartão"
-        subtitle="Acesso vitalício por R$19,99"
-        scrollable
-      >
-        <div className="space-y-4 sm:space-y-6">
-          <div className="-mb-2">
-            <BackButton
-              onClick={resetMethod}
-              label="Voltar para a escolha da forma de pagamento"
-            />
-          </div>
-
-          <div className="text-center py-1 sm:py-4">
-            <div className="text-3xl sm:text-4xl font-bold text-brand-500 mb-1">
-              R$ 19,99
-            </div>
-            <p className="text-text-secondary text-sm">
-              Pagamento único · Acesso vitalício
-            </p>
-          </div>
-
-          {error && (
-            <div className="p-3 rounded-lg bg-danger/10 border border-danger/30 flex items-start gap-2">
-              <AlertCircle size={16} className="text-danger shrink-0 mt-0.5" />
-              <p className="text-danger text-sm">{error}</p>
-            </div>
-          )}
-
-          {/* min-w-0 + w-full: o formulário do Mercado Pago se ajusta à largura do celular */}
-          <div className="w-full min-w-0">
-            <CardPayment
-              initialization={{ amount: 19.99 }}
-              onSubmit={handleCardSubmit}
-              onError={() => setError('Erro ao carregar formulário de cartão')}
-            />
-          </div>
-
-          <button
-            onClick={resetMethod}
-            className="w-full text-xs text-text-muted hover:text-text-secondary transition-colors"
-          >
-            Voltar
-          </button>
         </div>
       </AuthLayout>
     );
@@ -510,7 +393,7 @@ export function Checkout() {
           onClick={resetMethod}
           className="w-full text-xs text-text-muted hover:text-text-secondary transition-colors"
         >
-          Escolher outro método
+          Voltar
         </button>
       </div>
     </AuthLayout>

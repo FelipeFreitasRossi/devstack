@@ -72,21 +72,10 @@ export const api = {
   me: () => request('/auth/me'),
 
   // signupToken: cadastro novo que ainda não está no banco (só existe depois do pagamento)
-  createPayment: (method: 'pix' | 'credit_card', signupToken?: string) =>
+  createPayment: (method: 'pix' | 'boleto', signupToken?: string) =>
     request('/payments/create', {
       method: 'POST',
       body: JSON.stringify({ method, signup_token: signupToken }),
-    }),
-
-  createCardPayment: (data: {
-    token: string;
-    payment_method_id: string;
-    installments: number;
-    signup_token?: string;
-  }) =>
-    request('/payments/create-card', {
-      method: 'POST',
-      body: JSON.stringify(data),
     }),
 
   checkPaymentStatus: (orderId: string, signupToken?: string) =>

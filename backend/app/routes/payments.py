@@ -5,7 +5,7 @@ from pydantic import BaseModel
 from datetime import datetime
 from app.auth import get_current_user, create_access_token
 from app.database import users_collection, orders_collection
-from app.mercadopago import create_payment_order, create_card_order, get_order
+from app.mercadopago import create_payment_order, get_order
 from app.signup import (
     read_signup_token,
     signup_payer,
@@ -22,13 +22,6 @@ optional_bearer = HTTPBearer(auto_error=False)
 
 class PaymentRequest(BaseModel):
     method: str
-    signup_token: Optional[str] = None  # cadastro novo, ainda não salvo no banco
-
-
-class CardPaymentRequest(BaseModel):
-    token: str
-    payment_method_id: str
-    installments: int
     signup_token: Optional[str] = None  # cadastro novo, ainda não salvo no banco
 
 
@@ -74,21 +67,20 @@ def _save_approved_order(user: dict, order_id: str, method: str) -> None:
 def _extract_error_detail(result: dict) -> str:
     """Extrai mensagem de erro amigável da resposta do Mercado Pago."""
     data = result.get("data", {})
-    
+
     # Erro interno do MP (sandbox)
     if data.get("status_detail") == "processing_error":
         return (
             "Este método de pagamento não está disponível no ambiente de teste. "
-            "Para testar Pix e Boleto, use as credenciais de produção. "
-            "O cartão funciona normalmente em testes."
+            "Para testar Pix, use as credenciais de produção."
         )
-    
+
     # Erros estruturados da API
     errors = data.get("errors", [])
     if errors and isinstance(errors, list):
         messages = [e.get("message", "") for e in errors]
         return " | ".join(messages)
-    
+
     # Erro genérico
     return data.get("message") or data.get("error") or "Erro ao processar pagamento"
 
@@ -156,68 +148,6 @@ async def create_payment(
         })
 
     return response
-
-
-@router.post("/create-card")
-async def create_card_payment(
-    data: CardPaymentRequest,
-    credentials: Optional[HTTPAuthorizationCredentials] = Depends(optional_bearer),
-):
-    if data.signup_token:
-        signup = read_signup_token(data.signup_token)
-        ensure_email_available(signup)
-        user = None
-        payer = signup_payer(signup)
-    else:
-        user = _authenticated_user(credentials)
-        payer = user
-        if user.get("paid"):
-            raise HTTPException(status_code=400, detail="Pagamento já realizado")
-
-    result = await create_card_order(
-        payer, data.token, data.payment_method_id, data.installments
-    )
-
-    if result["status_code"] not in (200, 201):
-        raise HTTPException(
-            status_code=result["status_code"],
-            detail=_extract_error_detail(result),
-        )
-
-    order = result["data"]
-    status = order.get("status")
-    is_paid = status in ("processed", "approved")
-
-    if is_paid and user is None:
-        # Cadastro novo: pagamento aprovado, agora sim cria o usuário
-        new_user = create_user_from_signup(signup)
-        _save_approved_order(new_user, order.get("id"), "credit_card")
-        return {
-            "order_id": order.get("id"),
-            "status": status,
-            "paid": True,
-            **_signup_response(new_user),
-        }
-
-    if is_paid:
-        users_collection.update_one(
-            {"_id": user["_id"]},
-            {"$set": {"paid": True, "paid_at": datetime.utcnow()}},
-        )
-        orders_collection.insert_one({
-            "user_id": user["_id"],
-            "order_id": order.get("id"),
-            "amount": 19.99,
-            "method": "credit_card",
-            "status": "approved",
-            "created_at": datetime.utcnow(),
-        })
-
-    return {
-        "order_id": order.get("id"),
-        "status": status,
-        "paid": is_paid,
-    }
 
 
 @router.get("/status/{order_id}")
