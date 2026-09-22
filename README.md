@@ -1,249 +1,401 @@
-<div align="center">
+# DevStack — Plataforma Saas Full Stack
 
-# Devstack
+Plataforma completa de cursos online, com backend em FastAPI, frontend em React + TypeScript e banco de dados MongoDB. Sistema de autenticação com JWT, painel do aluno, progresso de aulas, conquistas, integração com Mercado Pago e deploy em produção.
 
-**Plataforma de curso de programação com acesso vitalício.**
-Aprenda Python, APIs e Git escrevendo código de verdade, direto no navegador.
-
-![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)
-![TypeScript](https://img.shields.io/badge/TypeScript-6-3178C6?logo=typescript&logoColor=white)
-![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white)
-![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white)
-![MongoDB](https://img.shields.io/badge/MongoDB-47A248?logo=mongodb&logoColor=white)
-![Mercado Pago](https://img.shields.io/badge/Mercado_Pago-009EE3?logo=mercadopago&logoColor=white)
-![License](https://img.shields.io/badge/license-MIT-amber)
-
-</div>
+🌐 **Produção:** [https://inteligenciabrasileira.com](https://inteligenciabrasileira.com)
+📚 **API Docs:** [https://devstack-z0gf.onrender.com/docs](https://devstack-z0gf.onrender.com/docs)
 
 ---
 
-## Sobre o projeto
+## 📋 Índice
 
-O **Devstack** é um SaaS de ensino de programação. O aluno paga **uma única vez (R$ 19,99)** e tem acesso vitalício ao conteúdo. Cada lição traz teoria, exemplos e exercícios que o aluno resolve em um **editor de código no navegador**, com correção automática.
+- [Visão Geral](#-visão-geral)
+- [Stack Tecnológica](#-stack-tecnológica)
+- [Estrutura do Projeto](#-estrutura-do-projeto)
+- [Funcionalidades](#-funcionalidades)
+- [Como Rodar Localmente](#-como-rodar-localmente)
+- [Variáveis de Ambiente](#-variáveis-de-ambiente)
+- [API — Endpoints Principais](#-api--endpoints-principais)
+- [Deploy](#-deploy)
+- [Arquitetura](#-arquitetura)
+- [Segurança](#-segurança)
+- [Roadmap](#-roadmap)
+- [Licença](#-licença)
 
-O projeto é dividido em duas partes:
+---
 
-- **`frontend/`**: aplicação web em React + TypeScript (landing page, cadastro, checkout, área do aluno, lições e perfil).
-- **`backend/`**: API em FastAPI com MongoDB, autenticação JWT, pagamentos via Mercado Pago e execução segura do código dos alunos.
+## 🎯 Visão Geral
 
-## Funcionalidades
+O **DevStack** é uma plataforma de ensino de programação com foco em full stack. O aluno percorre uma trilha de módulos (Lógica de Programação, Python, FastAPI, Git/GitHub, Deploy), com aulas teóricas, exercícios de código corrigidos automaticamente em sandbox Python, sistema de progresso, conquistas e integração de pagamento.
 
-### Para o aluno
-- **Trilha de estudos** com 6 módulos e 57 lições (cerca de 51 horas de conteúdo):
+**Principais usuários:**
+- **Aluno:** consome o conteúdo, faz exercícios, acompanha progresso.
+- **Admin:** gerencia módulos, aulas e usuários.
 
-  | Módulo | Tema | Lições |
-  |:-:|---|:-:|
-  | 01 | Lógica de Programação | 11 |
-  | 02 | Python Fundamentos | 11 |
-  | 03 | Python Intermediário | 10 |
-  | 04 | Python para Desenvolvimento (HTTP, APIs, autenticação e banco de dados) | 7 |
-  | 05 | FastAPI | 8 |
-  | 08 | Git e GitHub | 10 |
+---
 
-- **Editor de código no navegador** com exercícios corrigidos automaticamente e dicas quando a resposta está errada.
-- **Painel do aluno** com progresso por módulo, próxima lição, atividade semanal, distribuição do tempo de estudo e linha do tempo.
-- **Streak de estudo** (dias seguidos) e **meta semanal**.
-- **6 conquistas** desbloqueáveis: *Primeiro passo*, *Streak de 3 dias*, *Semana completa*, *Módulo completo*, *Dev dedicado* e *Devstack master*.
-- **Busca de lições** e **perfil** com alteração de nome e senha.
+## 🛠 Stack Tecnológica
 
-### Pagamento
-- **Pix** (QR Code e "copia e cola") e **cartão de crédito** com o Mercado Pago.
-- **O usuário só é criado no banco depois que o pagamento é confirmado.** Quem desiste do checkout não deixa cadastro salvo (veja [Fluxo de cadastro e pagamento](#fluxo-de-cadastro-e-pagamento)).
-- Confirmação do Pix por *polling* na API do Mercado Pago, conferindo que o pedido pertence àquele cadastro.
+### Backend
+- **Python 3.14**
+- **FastAPI** — framework web moderno e assíncrono
+- **Uvicorn** — servidor ASGI
+- **Pydantic** — validação de dados
+- **PyMongo** — driver oficial do MongoDB
+- **python-jose** — geração e validação de JWT
+- **bcrypt** — hash de senhas
+- **python-dotenv** — gestão de variáveis de ambiente
+- **Mercado Pago SDK** — integração de pagamentos
 
-### Segurança
-- Senhas com hash **bcrypt**; nunca ficam em texto puro.
-- Autenticação com **JWT**.
-- Código dos alunos roda em um **subprocesso isolado**, com tempo limite, limite de saída e bloqueio de módulos e funções perigosas (`os`, `subprocess`, `socket`, `open`, `eval` etc.).
+### Frontend
+- **React 18** + **TypeScript**
+- **Vite** — build tool ultrarrápido
+- **Tailwind CSS** — estilização
+- **React Router** — roteamento SPA
+- **GSAP** — animações
+- **Lucide React** — ícones
 
-## Tecnologias
+### Banco de Dados
+- **MongoDB Atlas** — banco NoSQL na nuvem (plano M0 gratuito)
 
-| Camada | Tecnologias |
-|---|---|
-| **Frontend** | React 19, TypeScript, Vite, Tailwind CSS 4, React Router 7, GSAP, Lottie, Lucide Icons, SDK React do Mercado Pago |
-| **Backend** | Python, FastAPI, Uvicorn, Pydantic, PyMongo, python-jose (JWT), bcrypt, httpx |
-| **Banco de dados** | MongoDB (Atlas ou local) |
-| **Pagamentos** | Mercado Pago (Pix e cartão) |
+### Infraestrutura
+- **Render** — hospedagem do backend (plano Free)
+- **HostGator** — hospedagem do frontend estático (cPanel)
+- **UptimeRobot** — monitoramento anti-sleep
+- **GitHub** — versionamento de código
 
-## Estrutura do projeto
-
-```
+## 📁 Estrutura do Projeto
 devstack/
-├── backend/
-│   ├── app/
-│   │   ├── main.py              # Cria o app FastAPI, CORS e rotas
-│   │   ├── auth.py              # Hash de senha, JWT e usuário logado
-│   │   ├── signup.py            # Cadastro pendente (token assinado, antes do pagamento)
-│   │   ├── mercadopago.py       # Integração com a API de pedidos do Mercado Pago
-│   │   ├── database.py          # Conexão com o MongoDB e coleções
-│   │   ├── analytics.py         # Currículo, progresso, streak e conquistas
-│   │   ├── code_runner.py       # Executa o código do aluno em subprocesso
-│   │   ├── sandbox_worker.py    # Worker isolado (bloqueios e limites)
-│   │   ├── lessons_content/     # Conteúdo das lições, por módulo
-│   │   └── routes/              # auth, payments, webhooks, dashboard, lessons, profile
-│   └── requirements.txt
-└── frontend/
-    └── src/
-        ├── components/          # ui, layout, sections, student, lesson, profile, auth
-        ├── contexts/            # AuthContext e transições entre login/cadastro
-        ├── hooks/               # useDashboard, useLesson, useProfile...
-        ├── pages/               # Home, Login, Cadastro, Checkout, StudentArea...
-        └── services/api.ts      # Cliente da API
-```
+├── backend/ # API FastAPI
+│ ├── app/
+│ │ ├── main.py # Ponto de entrada FastAPI
+│ │ ├── database.py # Conexão MongoDB
+│ │ ├── auth.py # Autenticação JWT + bcrypt
+│ │ ├── analytics.py # CURRICULUM + cálculos de progresso
+│ │ ├── models.py # Schemas Pydantic
+│ │ ├── lessons_content/ # Conteúdo das aulas (modularizado)
+│ │ │ ├── init.py
+│ │ │ ├── lessons_module_01.py
+│ │ │ ├── lessons_module_02.py
+│ │ │ └── ...
+│ │ └── routes/ # Rotas da API
+│ │ ├── auth.py
+│ │ ├── lessons.py
+│ │ ├── dashboard.py
+│ │ ├── profile.py
+│ │ ├── payments.py
+│ │ └── webhooks.py
+│ ├── requirements.txt
+│ └── .env.example
+│
+├── frontend/ # App React + TypeScript
+│ ├── src/
+│ │ ├── components/ # Componentes reutilizáveis
+│ │ ├── pages/ # Páginas (rotas)
+│ │ ├── services/ # Chamadas à API
+│ │ ├── contexts/ # Context API (auth, etc)
+│ │ ├── hooks/ # Custom hooks
+│ │ └── styles/
+│ ├── public/
+│ ├── package.json
+│ ├── vite.config.ts
+│ └── .env.example
+│
+└── README.md
 
-## Como rodar localmente
+---
+
+## ✨ Funcionalidades
+
+### 👤 Autenticação
+- [x] Cadastro com validação de email e senha forte
+- [x] Login com JWT (expiração de 24h)
+- [x] Hash de senhas com bcrypt
+- [x] Rotas protegidas via `Depends()`
+- [x] Refresh de token
+
+### 📚 Conteúdo
+- [x] 8 módulos com aulas teóricas e exercícios
+- [x] Conteúdo das aulas em arquivos modulares Python
+- [x] Sandbox Python para execução de exercícios
+- [x] Validação automática de respostas
+- [x] Sistema de dicas (hints) e starter code
+
+### 📊 Progresso do Aluno
+- [x] Marcadores de aula concluída
+- [x] Cálculo de progresso por módulo e geral
+- [x] Streak (dias consecutivos de estudo)
+- [x] Tempo total de estudo
+- [x] Timeline de atividades
+- [x] Sidebar com status (bloqueada, atual, concluída)
+
+### 🏆 Gamificação
+- [x] Sistema de conquistas (achievements)
+- [x] Catálogo com 6 conquistas
+- [x] Desbloqueio automático por condição
+- [x] Notificações em tempo real
+
+### 💳 Pagamentos
+- [x] Integração com Mercado Pago (Pix + Cartão)
+- [x] Webhook para liberação automática
+- [x] Controle de acesso por status de pagamento
+
+### 🎨 UI/UX
+- [x] Design responsivo (mobile-first)
+- [x] Animações com GSAP
+- [x] Tema dark
+- [x] Componentes customizados (GlowCard, etc)
+- [x] Loading states e error handling
+
+---
+
+## 🚀 Como Rodar Localmente
 
 ### Pré-requisitos
-- **Python** 3.10 ou superior
-- **Node.js** 20.19 ou superior
-- Um banco **MongoDB** (o [MongoDB Atlas](https://www.mongodb.com/atlas) tem plano gratuito)
-- Uma conta no **Mercado Pago Developers** para as credenciais
+- **Python 3.11+**
+- **Node.js 18+**
+- **Git**
+- Conta no **MongoDB Atlas** (gratuita)
 
 ### 1. Clonar o repositório
 
-```bash
 git clone https://github.com/FelipeFreitasRossi/devstack.git
 cd devstack
-```
-
-### 2. Backend
-
-```bash
+2. Backend — FastAPI
 cd backend
 
-# Criar e ativar o ambiente virtual
+# Criar e ativar ambiente virtual
 python -m venv venv
-venv\Scripts\activate        # Windows
-# source venv/bin/activate   # Linux / macOS
+# Windows:
+venv\Scripts\activate
+# Linux/Mac:
+source venv/bin/activate
 
-# Instalar as dependências
+# Instalar dependências
 pip install -r requirements.txt
-```
 
-Crie o arquivo `backend/.env` (veja a tabela [abaixo](#variáveis-de-ambiente)) e inicie a API:
+# Copiar o arquivo de exemplo e preencher as variáveis
+cp .env.example .env
 
-```bash
-uvicorn app.main:app --reload
-```
+# Rodar o servidor
+uvicorn app.main:app --reload --port 8000
+Acessar:
 
-A API fica em `http://localhost:8000` e a documentação interativa em `http://localhost:8000/docs`.
+API: http://localhost:8000
 
-### 3. Frontend
+Swagger: http://localhost:8000/docs
 
-```bash
+ReDoc: http://localhost:8000/redoc
+
+3. Frontend — React + Vite
+
 cd frontend
+
+# Instalar dependências
 npm install
+
+# Copiar o arquivo de exemplo
+cp .env.example .env
+
+# Rodar em modo desenvolvimento
 npm run dev
-```
+Acessar: http://localhost:5173
 
-O site fica em `http://localhost:5173`.
+4. Build de produção (frontend)
 
-> O frontend chama a API em `http://localhost:8000/api` (definido em `frontend/src/services/api.ts`) e o backend só aceita requisições vindas de `http://localhost:5173` (CORS em `backend/app/main.py`). Se mudar as portas, ajuste esses dois pontos.
+cd frontend
+npm run build
+# Arquivos prontos em dist/
+🔐 Variáveis de Ambiente
+Backend (backend/.env)
+Variável	Descrição	Exemplo
+MONGODB_URI	String de conexão do MongoDB Atlas	mongodb+srv://user:pass@cluster.mongodb.net/...
+DB_NAME	Nome do banco de dados	curso_saas
+JWT_SECRET	Chave secreta para assinar tokens	string aleatória longa
+FRONTEND_URL	URL(s) do frontend autorizadas no CORS	https://inteligenciabrasileira.com
+MP_ACCESS_TOKEN	Access token do Mercado Pago	APP_USR-...
+MP_PUBLIC_KEY	Public key do Mercado Pago	APP_USR-...
+MP_WEBHOOK_SECRET	Secret para validar webhooks do MP	string do painel MP
+Gerar JWT_SECRET seguro:
 
-## Variáveis de ambiente
+python -c "import secrets; print(secrets.token_urlsafe(64))"
+Frontend (frontend/.env)
+Variável	Descrição	Exemplo
+VITE_API_URL	URL base da API	https://devstack-z0gf.onrender.com
+⚠️ Importante: variáveis do Vite precisam do prefixo VITE_ para serem expostas ao código React.
 
-Crie `backend/.env` com:
+⚠️ Nunca commite arquivos .env. Use os arquivos .env.example como template.
 
-| Variável | Descrição |
-|---|---|
-| `MONGODB_URI` | String de conexão do MongoDB |
-| `DB_NAME` | Nome do banco (padrão: `curso_saas`) |
-| `JWT_SECRET` | Chave secreta usada para assinar os tokens. Use um valor longo e aleatório |
-| `JWT_ALGORITHM` | Algoritmo do JWT (padrão: `HS256`) |
-| `JWT_EXPIRATION_HOURS` | Validade do login em horas (padrão: `24`) |
-| `MP_ACCESS_TOKEN` | *Access Token* do Mercado Pago |
-| `FRONTEND_URL` | URL do frontend (ex.: `http://localhost:5173/`) |
+📡 API — Endpoints Principais
+Autenticação
+Método	Endpoint	Descrição
+POST	/api/auth/register	Cadastro de novo usuário
+POST	/api/auth/login	Login (retorna JWT)
+GET	/api/auth/me	Dados do usuário logado
+Lições
+Método	Endpoint	Descrição
+GET	/lessons/{lesson_id}	Conteúdo de uma aula
+GET	/lessons/{lesson_id}/adjacent	Aula anterior e próxima
+POST	/lessons/{lesson_id}/complete	Marcar aula como concluída
+POST	/lessons/exercise/submit	Enviar solução de exercício
+Dashboard
+Método	Endpoint	Descrição
+GET	/dashboard/modules	Módulos com progresso
+GET	/dashboard/next-lesson	Próxima aula recomendada
+GET	/dashboard/weekly-activity	Atividade dos últimos 7 dias
+GET	/dashboard/achievements	Conquistas do usuário
+GET	/dashboard/timeline	Histórico de aulas concluídas
+Pagamentos
+Método	Endpoint	Descrição
+POST	/api/payments/checkout	Criar preferência de pagamento
+POST	/api/webhooks/mercadopago	Webhook do MP
+Documentação interativa completa: /docs
 
-Exemplo:
+🚢 Deploy
+Backend — Render
+Cria um Web Service no Render
 
-```env
-MONGODB_URI=mongodb+srv://USUARIO:SENHA@seu-cluster.mongodb.net/curso_saas
-DB_NAME=curso_saas
-JWT_SECRET=troque-por-uma-chave-longa-e-aleatoria
-JWT_ALGORITHM=HS256
-JWT_EXPIRATION_HOURS=24
-MP_ACCESS_TOKEN=TEST-0000000000000000-000000-00000000000000000000000000000000-000000000
-FRONTEND_URL=http://localhost:5173/
-```
+Conecta o repositório GitHub
 
-> **Nunca envie o `.env` para o GitHub.** Ele já está no `.gitignore`. Se uma senha ou chave vazar, troque-a imediatamente.
+Configurações:
 
-A **chave pública** do Mercado Pago (usada no formulário de cartão) fica em `frontend/src/pages/Checkout.tsx`, na chamada `initMercadoPago(...)`. Troque pela sua.
+Language: Python 3
 
-### Testando pagamentos
+Branch: main
 
-- Com credenciais de **teste** (`TEST-...`), o **cartão** funciona normalmente com os [cartões de teste](https://www.mercadopago.com.br/developers/pt/docs/checkout-api/integration-test/test-cards) do Mercado Pago.
-- O **Pix** exige credenciais de **produção**.
+Root Directory: backend
 
-## Fluxo de cadastro e pagamento
+Build Command: pip install -r requirements.txt
 
-O usuário **não é salvo no banco ao se cadastrar**. Os dados ficam em um token assinado (com a senha já em hash) até o pagamento ser confirmado:
+Start Command: uvicorn app.main:app --host 0.0.0.0 --port $PORT
 
-```mermaid
-sequenceDiagram
-    participant U as Aluno
-    participant F as Frontend
-    participant B as Backend
-    participant MP as Mercado Pago
-    participant DB as MongoDB
+Instance Type: Free
 
-    U->>F: Preenche nome, e-mail e senha
-    F->>B: POST /api/auth/register
-    B-->>F: signup_token (nada é salvo no banco)
-    U->>F: Escolhe Pix ou cartão
-    F->>B: Cria pagamento (com signup_token)
-    B->>MP: Cria o pedido
-    U->>MP: Paga
-    F->>B: Consulta o status do pedido
-    B->>MP: O pedido foi pago?
-    MP-->>B: Confirmado
-    B->>DB: Cria o usuário (uma única vez)
-    B-->>F: Login automático
-    F-->>U: Acesso à área do aluno
-```
+Adiciona as Environment Variables (ver seção anterior)
 
-Se o aluno abandonar, cancelar, falhar ou deixar o pagamento expirar, **nenhum usuário é criado**. Enquanto está no pagamento, o aluno pode voltar ao cadastro pela seta **← Voltar**, sem perder o que preencheu.
+Deploy automático a cada git push na main
 
-## Principais endpoints da API
+Anti-sleep (plano Free): configura um monitor no UptimeRobot para pingar https://seu-servico.onrender.com/health a cada 5 minutos.
 
-| Método | Rota | Descrição |
-|---|---|---|
-| `POST` | `/api/auth/register` | Valida o cadastro e devolve o `signup_token` (não grava no banco) |
-| `POST` | `/api/auth/login` | Login |
-| `POST` | `/api/payments/create` | Gera pagamento Pix |
-| `POST` | `/api/payments/create-card` | Paga com cartão |
-| `GET` | `/api/payments/status/{order_id}` | Consulta a confirmação do pagamento |
-| `POST` | `/api/webhooks/mercadopago` | Recebe notificações do Mercado Pago (hoje só registra em log) |
-| `GET` | `/api/dashboard/overview` | Resumo do painel do aluno |
-| `GET` | `/api/dashboard/modules` | Módulos e progresso |
-| `GET` | `/api/dashboard/achievements` | Conquistas |
-| `GET` | `/api/dashboard/weekly-activity` | Atividade da semana |
-| `POST` | `/api/dashboard/progress` | Registra progresso de estudo |
-| `GET` | `/api/lessons/search-index` | Índice para a busca de lições |
-| `GET` | `/api/lessons/{lesson_id}` | Conteúdo de uma lição |
-| `POST` | `/api/lessons/{lesson_id}/submit` | Envia o código de um exercício para correção |
-| `GET` `PUT` | `/api/profile` | Ver e alterar o perfil |
-| `PUT` | `/api/profile/password` | Alterar a senha |
+Frontend — HostGator
+Roda o build: npm run build
 
-A lista completa está em `http://localhost:8000/docs`.
+Compacta o conteúdo da pasta dist/ em um .zip
 
-## Próximos passos
+No cPanel → Gerenciador de Arquivos → pasta do domínio
 
-- [ ] Webhook do Mercado Pago para confirmar pagamentos mesmo com a aba fechada
-- [ ] Publicar os módulos 06 e 07, que já têm conteúdo escrito mas ainda não estão no currículo
-- [ ] Índice único no e-mail da coleção de usuários
-- [ ] Deploy (frontend e backend)
+Sobe o .zip, extrai, apaga o .zip
 
-## Contato
+Cria o arquivo .htaccess para SPA routing:
 
-**Felipe Freitas Rossi**
+apache
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule . /index.html [L]
+</IfModule>
+Banco — MongoDB Atlas
+Cria conta em cloud.mongodb.com
 
-[![GitHub](https://img.shields.io/badge/GitHub-FelipeFreitasRossi-181717?logo=github&logoColor=white)](https://github.com/FelipeFreitasRossi)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-felipefreitasrossi-0A66C2?logo=linkedin&logoColor=white)](https://www.linkedin.com/in/felipefreitasrossi/)
-[![Instagram](https://img.shields.io/badge/Instagram-codebyfelipe-E4405F?logo=instagram&logoColor=white)](https://www.instagram.com/codebyfelipe)
-[![Discord](https://img.shields.io/badge/Discord-Comunidade-5865F2?logo=discord&logoColor=white)](https://discord.gg/pTAVzG6DU3)
+Cria cluster M0 (gratuito)
 
-## Licença
+Security → Database Access: cria usuário com senha forte
 
-Distribuído sob a licença **MIT**. Veja o arquivo [`LICENSE`](LICENSE) para mais detalhes.
+Security → Network Access: libera 0.0.0.0/0 (para permitir IPs dinâmicos do Render)
+
+Copia a connection string e cola em MONGODB_URI no Render
+
+CORS
+Configura a variável FRONTEND_URL no Render com o domínio do site em produção:
+
+FRONTEND_URL=https://inteligenciabrasileira.com,https://www.inteligenciabrasileira.com
+🏗 Arquitetura
+text
+   ┌──────────────────┐
+   │     Usuário      │
+   └────────┬─────────┘
+            │ HTTPS
+            ▼
+   ┌──────────────────────────┐
+   │   Frontend (React SPA)   │
+   │   HostGator / Vercel     │
+   └────────┬─────────────────┘
+            │ HTTPS (JSON)
+            ▼
+   ┌──────────────────────────┐
+   │   Backend (FastAPI)      │
+   │   Render                 │
+   │  ┌─────────────────────┐ │
+   │  │ JWT Auth + CORS     │ │
+   │  │ Rotas REST /api/*   │ │
+   │  │ Sandbox de código   │ │
+   │  │ Mercado Pago SDK    │ │
+   │  └─────────────────────┘ │
+   └────────┬─────────────────┘
+            │ Connection String
+            ▼
+   ┌──────────────────────────┐
+   │   MongoDB Atlas (M0)     │
+   │   - users                │
+   │   - progress             │
+   │   - achievements         │
+   │   - daily_activity       │
+   │   - orders               │
+   └──────────────────────────┘
+🔒 Segurança
+Senhas: hasheadas com bcrypt (nunca em texto puro)
+
+Tokens JWT: assinados com SECRET de 512 bits, expiração de 24h
+
+CORS: origens restritas via variável de ambiente
+
+Validação: schemas Pydantic em todos os endpoints
+
+Variáveis sensíveis: nunca commitadas (.env no .gitignore)
+
+Validação de dados HTML: textContent no frontend (prevenção de XSS)
+
+Antes de ir para produção
+□ Repositório privado no GitHub
+□ Todas as chaves rotacionadas (nunca commitadas com valor real)
+□ .env no .gitignore (backend e frontend)
+□ FREE_MODE = False no analytics.py (desbloqueio sequencial por módulo)
+□ HTTPS forçado em produção
+□ Backup automático do MongoDB (plano pago Atlas)
+🗺 Roadmap
+☑ Autenticação com JWT
+☑ Sistema de progresso e conquistas
+☑ Sandbox de exercícios Python
+☑ Integração Mercado Pago
+□ Aplicativo mobile (React Native)
+□ Editor de código com syntax highlighting
+□ Modo colaborativo (estudo em grupo)
+□ Certificados de conclusão
+□ Suporte a múltiplos idiomas
+□ Analytics de aprendizado com IA
+🤝 Contribuindo
+Este é um projeto pessoal de curso, mas sugestões são bem-vindas. Abre uma issue para bugs ou features.
+
+Fork o projeto
+
+Cria uma branch: git checkout -b feature/minha-feature
+
+Commita seguindo Conventional Commits: feat: adiciona X
+
+Push: git push origin feature/minha-feature
+
+Abre um Pull Request
+
+📝 Licença
+Projeto privado. Todos os direitos reservados.
+
+O conteúdo das aulas, código-fonte e materiais são de propriedade exclusiva do autor. Uso comercial, redistribuição ou cópia não autorizada não são permitidos.
+
+👨‍💻 Autor
+Felipe Freitas Rossi
+
+GitHub: @FelipeFreitasRossi
+
+Projeto: github.com/FelipeFreitasRossi/devstack
