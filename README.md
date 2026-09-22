@@ -1,4 +1,4 @@
-# 🚀 DevStack — Plataforma de Cursos Full Stack
+# DevStack — Plataforma Saas Full Stack
 
 Plataforma completa de cursos online, com backend em FastAPI, frontend em React + TypeScript e banco de dados MongoDB. Sistema de autenticação com JWT, painel do aluno, progresso de aulas, conquistas, integração com Mercado Pago e deploy em produção.
 
@@ -26,7 +26,7 @@ Plataforma completa de cursos online, com backend em FastAPI, frontend em React 
 
 ## 🎯 Visão Geral
 
-O **DevStack** é uma plataforma de ensino de programação com foco em full stack. O aluno percorre uma trilha de módulos (Lógica de Programação, Python, FastAPI, HTML/CSS, JavaScript, Git/GitHub, Deploy), com aulas teóricas, exercícios de código corrigidos automaticamente em sandbox Python, sistema de progresso, conquistas e integração de pagamento.
+O **DevStack** é uma plataforma de ensino de programação com foco em full stack. O aluno percorre uma trilha de módulos (Lógica de Programação, Python, FastAPI, Git/GitHub, Deploy), com aulas teóricas, exercícios de código corrigidos automaticamente em sandbox Python, sistema de progresso, conquistas e integração de pagamento.
 
 **Principais usuários:**
 - **Aluno:** consome o conteúdo, faz exercícios, acompanha progresso.
@@ -63,7 +63,3 @@ O **DevStack** é uma plataforma de ensino de programação com foco em full sta
 - **HostGator** — hospedagem do frontend estático (cPanel)
 - **UptimeRobot** — monitoramento anti-sleep
 - **GitHub** — versionamento de código
-
----
-
-## 📁 Estrutura do Projeto
