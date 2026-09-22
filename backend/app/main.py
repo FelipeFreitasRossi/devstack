@@ -12,7 +12,7 @@ app = FastAPI(title="Devstack API", version="0.1.0")
 # CORS — lê as origens permitidas da variável de ambiente FRONTEND_URL
 # ============================================================================
 # Aceita múltiplas origens separadas por vírgula, por exemplo:
-#   FRONTEND_URL=https://inteligenciabrasileira.com,https://www.inteligenciabrasileira.com
+#   FRONTEND_URL=http://localhost:5173,https://inteligenciabrasileira.com
 #
 # Se a variável não estiver definida, cai no fallback de desenvolvimento local.
 # ============================================================================
@@ -43,6 +43,21 @@ async def root():
     return {"message": "Devstack API rodando"}
 
 
+# ============================================================================
+# HEALTH CHECK — usado pelo UptimeRobot para manter o backend acordado
+# ============================================================================
+# O UptimeRobot (plano gratuito) usa o método HEAD por padrão. Se só existir
+# a rota GET, o monitor marca o serviço como "Down" com falso positivo.
+# Aqui declaramos as duas rotas: GET devolve o JSON, HEAD só confirma que está
+# de pé (sem corpo de resposta).
+# ============================================================================
 @app.get("/health")
 async def health():
     return {"status": "ok"}
+
+
+@app.head("/health")
+async def health_head():
+    # Método HEAD: mesmo status 200 da rota GET, mas sem body.
+    # O FastAPI responde com 200 e headers automaticamente.
+    return
