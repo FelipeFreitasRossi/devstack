@@ -1,9 +1,9 @@
 import { useScrollAnimation } from '../../hooks/useScrollAnimation';
 
 const stats = [
-  { value: '180h', label: 'De conteúdo' },
-  { value: '20+', label: 'Projetos práticos' },
-  { value: '500+', label: 'Exercícios' },
+  { value: '120h', label: 'De conteúdo' },
+  { value: '7+', label: 'Módulos práticos' },
+  { value: '15+', label: 'Exercícios' },
   { value: '100%', label: 'Acesso vitalício' },
 ];
 
