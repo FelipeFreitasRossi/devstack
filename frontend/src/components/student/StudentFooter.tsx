@@ -16,7 +16,7 @@ import { Button } from '../ui/Button';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
-const LOGO_URL = 'https://i.postimg.cc/X7RLxfVm/3.png';
+import { LOGO_URL } from '../../config/brand';
 const EMAIL = 'feliperossidev@gmail.com';
 
 const SOCIAL_LINKS = {

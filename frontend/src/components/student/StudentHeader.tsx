@@ -11,7 +11,7 @@ import {
 import { useAuth } from '../../contexts/AuthContext';
 import { SearchBar } from './SearchBar';
 
-const LOGO_URL = 'https://i.postimg.cc/X7RLxfVm/3.png';
+import { LOGO_URL } from '../../config/brand';
 
 export function StudentHeader() {
   const navigate = useNavigate();

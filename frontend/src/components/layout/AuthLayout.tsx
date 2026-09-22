@@ -6,7 +6,7 @@ import gsap from 'gsap';
 import { SlothMascot } from '../auth/SlothMascot';
 import { useAuthTransition } from '../../contexts/AuthTransitionContext';
 
-const LOGO_URL = 'https://i.postimg.cc/qRJJC8m1/Logotiporemove.png';
+import { LOGO_URL } from '../../config/brand';
 
 interface AuthLayoutProps {
   children: ReactNode;

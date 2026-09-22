@@ -4,7 +4,7 @@ import { Menu, X } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { useScrolled } from '../../hooks/useScrolled';
 
-const LOGO_URL = 'https://i.postimg.cc/qRJJC8m1/Logotiporemove.png';
+import { LOGO_URL } from '../../config/brand';
 
 const navLinks = [
   { href: '#features', label: 'Vantagens' },
