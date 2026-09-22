@@ -1,8 +1,5 @@
 const API_URL = `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api`;
 
-// ============================================================================
-// HELPERS
-// ============================================================================
 function getToken(): string | null {
   return localStorage.getItem('token');
 }
@@ -26,7 +23,6 @@ async function request<T>(
     headers,
   });
 
-  // Sessão expirada
   if (response.status === 401) {
     localStorage.removeItem('token');
     if (!window.location.pathname.startsWith('/login')) {
@@ -35,7 +31,6 @@ async function request<T>(
     throw new Error('Sessão expirada. Faça login novamente.');
   }
 
-  // Lê como texto para não quebrar em respostas não-JSON
   const rawText = await response.text();
 
   let data: any = null;
@@ -53,9 +48,6 @@ async function request<T>(
   return data as T;
 }
 
-// ============================================================================
-// AUTH + PAYMENTS
-// ============================================================================
 export const api = {
   register: (name: string, email: string, password: string) =>
     request('/auth/register', {
@@ -71,7 +63,6 @@ export const api = {
 
   me: () => request('/auth/me'),
 
-  // signupToken: cadastro novo que ainda não está no banco (só existe depois do pagamento)
   createPayment: (method: 'pix' | 'boleto', signupToken?: string) =>
     request('/payments/create', {
       method: 'POST',
@@ -86,7 +77,7 @@ export const api = {
 };
 
 // ============================================================================
-// DASHBOARD — Types
+// DASHBOARD
 // ============================================================================
 export interface DashboardOverview {
   user: { name: string; email: string };
@@ -152,31 +143,16 @@ export interface TimelineEntry {
   date: string;
 }
 
-// ============================================================================
-// DASHBOARD — API
-// ============================================================================
 export const dashboardApi = {
   getOverview: () => request<DashboardOverview>('/dashboard/overview'),
-
-  getModules: () =>
-    request<{ modules: DashboardModule[] }>('/dashboard/modules'),
-
+  getModules: () => request<{ modules: DashboardModule[] }>('/dashboard/modules'),
   getAchievements: () =>
-    request<{ achievements: DashboardAchievement[] }>(
-      '/dashboard/achievements'
-    ),
-
+    request<{ achievements: DashboardAchievement[] }>('/dashboard/achievements'),
   getWeeklyActivity: () =>
     request<{ activity: WeeklyActivity[] }>('/dashboard/weekly-activity'),
-
   getTimeDistribution: () =>
-    request<{ distribution: ModuleTimeDistribution[] }>(
-      '/dashboard/time-distribution'
-    ),
-
-  getTimeline: () =>
-    request<{ entries: TimelineEntry[] }>('/dashboard/timeline'),
-
+    request<{ distribution: ModuleTimeDistribution[] }>('/dashboard/time-distribution'),
+  getTimeline: () => request<{ entries: TimelineEntry[] }>('/dashboard/timeline'),
   postProgress: (data: {
     module_id: string;
     lesson_id: string;
@@ -190,7 +166,7 @@ export const dashboardApi = {
 };
 
 // ============================================================================
-// LESSONS — Types
+// LESSONS
 // ============================================================================
 export type LessonBlockType = 'text' | 'code' | 'diagram';
 
@@ -225,11 +201,7 @@ export interface Lesson {
   summary: string[];
 }
 
-export type LessonSidebarStatus =
-  | 'completed'
-  | 'current'
-  | 'pending'
-  | 'locked';
+export type LessonSidebarStatus = 'completed' | 'current' | 'pending' | 'locked';
 
 export interface LessonSidebarLesson {
   id: string;
@@ -272,9 +244,6 @@ export type SubmitCodeResponse =
       hint: string;
     };
 
-// ============================================================================
-// LESSONS — API
-// ============================================================================
 export const lessonApi = {
   getLesson: (lessonId: string) =>
     request<LessonDetailResponse>(`/lessons/${lessonId}`),
@@ -296,7 +265,7 @@ export const lessonApi = {
 };
 
 // ============================================================================
-// SEARCH — Types + API
+// SEARCH
 // ============================================================================
 export interface SearchLesson {
   id: string;
@@ -315,7 +284,7 @@ export const searchApi = {
 };
 
 // ============================================================================
-// PROFILE — Types + API
+// PROFILE
 // ============================================================================
 export interface ProfileUser {
   id: string;

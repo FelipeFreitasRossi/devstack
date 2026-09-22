@@ -15,7 +15,6 @@ import { api } from '../services/api';
 
 type PaymentMethod = 'pix';
 
-// Resposta quando o pagamento de um CADASTRO NOVO é confirmado (o backend acabou de criar o usuário)
 interface SignupCompleted {
   paid: boolean;
   access_token?: string;
@@ -35,11 +34,6 @@ interface PaymentData {
   ticket_url?: string;
 }
 
-const METHOD_LABELS: Record<PaymentMethod, string> = {
-  pix: 'Pix',
-};
-
-// Função de cópia com fallback (funciona em qualquer navegador)
 async function copyToClipboard(text: string): Promise<boolean> {
   if (navigator.clipboard && window.isSecureContext) {
     try {
@@ -66,7 +60,6 @@ async function copyToClipboard(text: string): Promise<boolean> {
   }
 }
 
-// Seta discreta para voltar à etapa anterior (sem recarregar a página)
 function BackButton({ onClick, label }: { onClick: () => void; label: string }) {
   return (
     <button
@@ -92,27 +85,24 @@ export function Checkout() {
   } = useAuth();
   const signupToken = pendingSignup?.signupToken;
   const [payment, setPayment] = useState<PaymentData | null>(null);
-  const [selectedMethod, setSelectedMethod] = useState<PaymentMethod>('pix');
+  const [selectedMethod] = useState<PaymentMethod>('pix');
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
   const [copyError, setCopyError] = useState(false);
   const [error, setError] = useState('');
 
-  // Se já pagou, redireciona para a área do aluno
   useEffect(() => {
     if (user?.paid && !pendingSignup) {
       navigate('/minha-area');
     }
   }, [user, pendingSignup, navigate]);
 
-  // Sem cadastro em andamento e sem login: não há o que pagar, volta para o cadastro
   useEffect(() => {
     if (!authLoading && !user && !pendingSignup && !localStorage.getItem('token')) {
       navigate('/cadastro');
     }
   }, [authLoading, user, pendingSignup, navigate]);
 
-  // Polling de status para confirmar o pagamento Pix
   useEffect(() => {
     if (!payment?.order_id) return;
 
@@ -123,7 +113,6 @@ export function Checkout() {
           signupToken
         )) as SignupCompleted;
         if (result.paid && signupToken && result.access_token && result.user) {
-          // Cadastro novo: pagamento confirmado, usuário criado pelo backend
           completeSignup({
             access_token: result.access_token,
             user: result.user,
@@ -142,6 +131,11 @@ export function Checkout() {
   }, [payment, user, signupToken, updateUser, completeSignup, navigate]);
 
   const handleGeneratePayment = async () => {
+    if (!signupToken && !user && !localStorage.getItem('token')) {
+      setError('Você precisa fazer login ou refazer o cadastro para continuar.');
+      return;
+    }
+
     setLoading(true);
     setError('');
     try {
@@ -176,13 +170,10 @@ export function Checkout() {
   };
 
   const resetMethod = () => {
-    setSelectedMethod('pix');
     setPayment(null);
     setError('');
   };
 
-  // Volta para a etapa anterior (Cadastro) sem recarregar a página.
-  // Os dados continuam guardados em memória e o formulário abre preenchido.
   const handleBackToCadastro = () => navigate('/cadastro');
 
   if (authLoading) {
@@ -193,7 +184,6 @@ export function Checkout() {
     );
   }
 
-  // ============ TELA INICIAL (PIX) ============
   if (!payment) {
     return (
       <AuthLayout
@@ -235,7 +225,6 @@ export function Checkout() {
             </div>
           </div>
 
-          {/* Forma de pagamento (apenas Pix) */}
           <div className="p-4 rounded-lg border border-brand-500 bg-brand-500/10 text-center">
             <QrCode size={22} className="mx-auto mb-2 text-brand-500" />
             <span className="text-sm font-medium text-brand-500">
@@ -277,7 +266,6 @@ export function Checkout() {
     );
   }
 
-  // ============ PIX (RESULTADO) ============
   return (
     <AuthLayout
       title="Aguardando pagamento"

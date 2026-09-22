@@ -9,12 +9,44 @@ interface User {
   paid: boolean;
 }
 
-// Cadastro que ainda NÃO está no banco: fica só na memória até o pagamento ser confirmado.
+// Cadastro que ainda NÃO está no banco: fica salvo até o pagamento ser confirmado.
+// A senha fica apenas em memória (nunca é persistida, por segurança).
 interface PendingSignup {
   name: string;
   email: string;
-  password: string; // só em memória (some ao recarregar a página); nunca vai para o localStorage
+  password?: string; // só em memória; some ao recarregar (é repopulada no form se faltar)
   signupToken: string;
+}
+
+// O que vai para o sessionStorage — sem a senha, por segurança
+type PersistedPendingSignup = Omit<PendingSignup, 'password'>;
+
+const PENDING_SIGNUP_KEY = 'pending_signup';
+
+function loadPendingSignup(): PendingSignup | null {
+  try {
+    const raw = sessionStorage.getItem(PENDING_SIGNUP_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw) as PersistedPendingSignup;
+  } catch {
+    return null;
+  }
+}
+
+function persistPendingSignup(data: PendingSignup | null): void {
+  try {
+    if (data) {
+      const { name, email, signupToken } = data;
+      sessionStorage.setItem(
+        PENDING_SIGNUP_KEY,
+        JSON.stringify({ name, email, signupToken })
+      );
+    } else {
+      sessionStorage.removeItem(PENDING_SIGNUP_KEY);
+    }
+  } catch {
+    // sessionStorage indisponível (raro); segue só em memória
+  }
 }
 
 interface AuthContextType {
@@ -33,7 +65,17 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const [pendingSignup, setPendingSignup] = useState<PendingSignup | null>(null);
+
+  // Inicializa já tentando recuperar do sessionStorage
+  const [pendingSignup, setPendingSignupState] = useState<PendingSignup | null>(
+    () => loadPendingSignup()
+  );
+
+  // Wrapper: atualiza o state E persiste no sessionStorage (sem a senha)
+  const setPendingSignup = (data: PendingSignup | null) => {
+    setPendingSignupState(data);
+    persistPendingSignup(data);
+  };
 
   // Restaura sessão ao carregar
   useEffect(() => {
@@ -63,16 +105,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setPendingSignup(null);
   };
 
-  // Não cria conta nem faz login: só valida os dados e guarda em memória.
-  // A conta só passa a existir depois do pagamento confirmado (completeSignup).
+  // Não cria conta nem faz login: só valida os dados e guarda (senha em memória,
+  // resto em sessionStorage). A conta só existe depois do pagamento confirmado.
   const register = async (name: string, email: string, password: string) => {
     const data = (await api.register(name, email, password)) as {
       signup_token: string;
     };
-    setPendingSignup({ name, email, password, signupToken: data.signup_token });
+    setPendingSignup({
+      name,
+      email,
+      password,
+      signupToken: data.signup_token,
+    });
   };
 
-  // Chamada quando o pagamento é confirmado e o backend já criou o usuário.
+  // Chamado quando o pagamento é confirmado e o backend já criou o usuário.
   const completeSignup = (data: { access_token: string; user: User }) => {
     localStorage.setItem('token', data.access_token);
     setUser(data.user);
@@ -82,6 +129,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = () => {
     localStorage.removeItem('token');
     setUser(null);
+    setPendingSignup(null);
   };
 
   const updateUser = (updated: User) => setUser(updated);

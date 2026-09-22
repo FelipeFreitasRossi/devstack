@@ -68,20 +68,17 @@ def _extract_error_detail(result: dict) -> str:
     """Extrai mensagem de erro amigável da resposta do Mercado Pago."""
     data = result.get("data", {})
 
-    # Erro interno do MP (sandbox)
     if data.get("status_detail") == "processing_error":
         return (
             "Este método de pagamento não está disponível no ambiente de teste. "
             "Para testar Pix, use as credenciais de produção."
         )
 
-    # Erros estruturados da API
     errors = data.get("errors", [])
     if errors and isinstance(errors, list):
         messages = [e.get("message", "") for e in errors]
         return " | ".join(messages)
 
-    # Erro genérico
     return data.get("message") or data.get("error") or "Erro ao processar pagamento"
 
 
@@ -117,7 +114,6 @@ async def create_payment(
     payment = order.get("transactions", {}).get("payments", [{}])[0]
     payment_method = payment.get("payment_method", {})
 
-    # Cadastro novo (user is None): nada é salvo antes do pagamento ser confirmado
     if user is not None:
         users_collection.update_one(
             {"_id": user["_id"]},
@@ -169,7 +165,6 @@ async def check_status(
     is_paid = status_value in ("processed", "approved")
 
     if signup:
-        # Só vale se a order foi criada para ESTE cadastro
         if is_paid and order.get("external_reference") == signup["sid"]:
             new_user = create_user_from_signup(signup)
             _save_approved_order(new_user, order_id, "pix")
