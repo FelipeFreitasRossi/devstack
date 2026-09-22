@@ -20,22 +20,24 @@ LESSON_02_01 = {
                 {"type": "text", "value": "Antes de escrever código, precisamos preparar o **ambiente de desenvolvimento**. É como um carpinteiro que precisa de martelo e serra — nós precisamos de duas ferramentas: **Python** e **VS Code**."},
                 {"type": "text", "value": "**Python** é a linguagem que vamos usar. Ele é uma das linguagens mais populares do mundo, usado em **web, automação, IA, ciência de dados, APIs e backend** — por empresas como Google, Instagram, Netflix e Spotify."},
                 {"type": "text", "value": "**VS Code** (Visual Studio Code) é o editor onde escrevemos o código. É gratuito, leve e tem extensões que facilitam muito a vida do programador."},
-                {"type": "text", "value": "**Passo 1:** baixe o Python em [python.org/downloads](https://www.python.org/downloads/). No Windows, **marque a caixa \"Add Python to PATH\"** antes de clicar em Install. Isso é essencial para o Python funcionar no terminal."},
-                {"type": "text", "value": "**Passo 2:** baixe o VS Code em [code.visualstudio.com](https://code.visualstudio.com). Instale com as opções padrão."},
-                {"type": "text", "value": "**Passo 3:** abra o VS Code, vá na aba de **Extensões** (ícone de blocos na lateral) e instale a extensão oficial **Python** da Microsoft. Ela adiciona autocomplete, execução e detecção de erros."},
-                {"type": "text", "value": "**Passo 4:** abra o **terminal** integrado do VS Code (atalho `Ctrl + '`) e teste se o Python está instalado:"},
+                {"type": "text", "value": "**Passo 1 — Baixe o Python.** Acesse [python.org/downloads](https://www.python.org/downloads/) e clique no botão amarelo de download; o site já identifica seu sistema (Windows, Mac ou Linux) sozinho. No instalador do **Windows**, marque a caixinha **\"Add python.exe to PATH\"** logo na primeira tela, antes de clicar em Install Now. Sem isso, o Python não funciona no terminal. No **Mac**, essa etapa já é feita automaticamente pelo instalador."},
+                {"type": "text", "value": "**Passo 2 — Baixe o VS Code.** Acesse [code.visualstudio.com](https://code.visualstudio.com/) e clique no botão azul de download. Abra o instalador, aceite os termos e siga com as opções padrão até instalar. No Windows, marque também a opção **\"Adicionar ao PATH\"**, se ela aparecer."},
+                {"type": "text", "value": "**Passo 3 — Instale a extensão do Python.** Abra o VS Code, clique no ícone de quadrados (**Extensions**) na barra lateral esquerda, digite \"Python\" e instale a extensão oficial da **Microsoft** — é a primeira da lista, com o ícone azul e amarelo. Ela adiciona autocomplete, execução e detecção de erros."},
+                {"type": "text", "value": "**Passo 4 — Confira se o Python está instalado.** Abra o terminal integrado do VS Code (atalho `` Ctrl + ` ``, ou `View → Terminal`) e digite:"},
                 {
                     "type": "code",
                     "caption": "Verificando a instalação",
                     "value": "python --version\n# ou, se não funcionar:\npy --version\n\n# Saída esperada:\n# Python 3.12.x (ou similar)",
                 },
-                {"type": "text", "value": "**Passo 5:** crie uma pasta chamada `python-curso` no seu computador. Depois abra ela no VS Code (`File → Open Folder`). Crie um arquivo chamado `main.py` e escreva:"},
+                {"type": "text", "value": "**Passo 5 — Crie sua pasta de projetos.** Crie uma pasta no seu computador para guardar seus códigos — por exemplo, `python-curso` na Área de Trabalho. No VS Code, vá em `File → Open Folder` e selecione essa pasta."},
+                {"type": "text", "value": "**Passo 6 — Crie o arquivo e dê um nome a ele.** Na barra lateral esquerda, passe o mouse sobre o nome da pasta e clique no ícone de página com um **\"+\"** que aparece. Digite o nome do arquivo **seguido da extensão `.py`** — por exemplo, `main.py` — e aperte Enter."},
+                {"type": "text", "value": "É a extensão `.py` no final do nome que avisa o VS Code (e o Python) que esse arquivo é código Python. Sem ela, o botão de rodar não aparece e a extensão não reconhece o arquivo. Evite espaços e acentos no nome — prefira `meu_arquivo.py` a `meu arquivo.py`."},
                 {
                     "type": "code",
                     "caption": "Primeiro programa",
                     "value": "print(\"Olá, mundo!\")",
                 },
-                {"type": "text", "value": "Rode clicando no **▶** no canto superior direito, ou no terminal com `python main.py`. Se aparecer **\"Olá, mundo!\"**, parabéns — seu ambiente está pronto! 🎉"},
+                {"type": "text", "value": "Escreva o código acima no arquivo, salve com `Ctrl + S` (ou `Cmd + S` no Mac) e rode clicando no **▶** no canto superior direito, ou no terminal com `python main.py`. Se aparecer **\"Olá, mundo!\"**, parabéns — seu ambiente está pronto! 🎉"},
                 {"type": "text", "value": "**Só para garantir:** para provar que você instalou tudo corretamente, faça o exercício abaixo. Ele vai rodar no **nosso ambiente** (não precisa do seu Python local) e confirmar que a frase aparece corretamente."},
             ],
             "exercise": {
@@ -54,6 +56,7 @@ LESSON_02_01 = {
         "Python é o interpretador; VS Code é o editor.",
         "Sempre marque 'Add Python to PATH' na instalação do Windows.",
         "A extensão Python do VS Code dá autocomplete e debug.",
+        "Todo arquivo Python termina com a extensão .py — sem ela, o VS Code não roda o código.",
     ],
 }
 

@@ -8,7 +8,12 @@ from app.database import (
     daily_activity_collection,
     lesson_submissions_collection,
 )
-from app.analytics import get_lesson_sidebar, check_achievements, CURRICULUM
+from app.analytics import (
+    get_lesson_sidebar,
+    check_achievements,
+    is_lesson_accessible,
+    CURRICULUM,
+)
 from app.lessons_content import (
     get_lesson,
     get_adjacent_lesson_ids,
@@ -89,6 +94,13 @@ async def get_lesson_detail(lesson_id: str, user=Depends(get_current_user)):
         raise HTTPException(status_code=404, detail="Lição não encontrada")
 
     user_id = str(user["_id"])
+
+    if not is_lesson_accessible(user_id, lesson_id):
+        raise HTTPException(
+            status_code=403,
+            detail="Conclua o módulo anterior para desbloquear esta lição.",
+        )
+
     prev_id, next_id = get_adjacent_lesson_ids(lesson_id)
 
     already_completed = progress_collection.find_one({
@@ -120,8 +132,15 @@ async def submit_code(
     if not lesson:
         raise HTTPException(status_code=404, detail="Lição não encontrada")
 
-    exercise = _find_exercise(lesson, data.exercise_id)
     user_id = str(user["_id"])
+
+    if not is_lesson_accessible(user_id, lesson_id):
+        raise HTTPException(
+            status_code=403,
+            detail="Conclua o módulo anterior para desbloquear esta lição.",
+        )
+
+    exercise = _find_exercise(lesson, data.exercise_id)
 
     execution = run_student_code(data.code)
 

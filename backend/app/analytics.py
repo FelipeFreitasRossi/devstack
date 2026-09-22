@@ -6,14 +6,13 @@ from app.database import (
 )
 
 # ============================================================================
-# 🚧 MODO LIVRE (DESENVOLVIMENTO)
+# MODO DA PLATAFORMA
 # ============================================================================
-# True  → todos os módulos ficam desbloqueados (para desenvolver/testar)
-# False → volta ao modo trilha (desbloqueio sequencial)
-#
-# ⚠️ ANTES DE IR PARA PRODUÇÃO: mude para False
+# True  → todos os módulos ficam desbloqueados (útil para desenvolver/testar)
+# False → modo trilha: só desbloqueia o próximo módulo quando TODAS as lições
+#         do módulo anterior forem concluídas (exercício resolvido)
 # ============================================================================
-FREE_MODE = True
+FREE_MODE = False
 
 CURRICULUM = [
     {
@@ -265,6 +264,19 @@ def calculate_total_hours(user_id: str) -> float:
     if not result:
         return 0.0
     return round(result[0]["total"] / 60, 1)
+
+
+def is_lesson_accessible(user_id: str, lesson_id: str) -> bool:
+    """
+    Confere se o aluno pode abrir/enviar exercício desta lição agora.
+    Usada pelas rotas de lições para não depender só do frontend escondendo
+    o link: sem isso, dava para acessar uma lição trancada digitando a URL.
+    """
+    module_id = lesson_id.split("-")[0]
+    for index, module in enumerate(CURRICULUM):
+        if module["id"] == module_id:
+            return _is_module_unlocked(user_id, index)
+    return False  # lição de um módulo que nem existe no currículo
 
 
 def _is_module_unlocked(user_id: str, module_index: int) -> bool:

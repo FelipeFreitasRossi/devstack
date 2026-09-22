@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { CheckCircle2, XCircle, Loader2, Lightbulb, Send } from 'lucide-react';
 import { CodeEditor } from './CodeEditor';
 import type { SubmitCodeResponse } from '../../services/api';
@@ -27,6 +28,8 @@ export function ExerciseBlock({
   result,
   attempts,
 }: ExerciseBlockProps) {
+  const [showHint, setShowHint] = useState(false);
+
   return (
     <div className="space-y-6 p-5 md:p-6 rounded-2xl border border-border bg-surface-elevated">
       {/* Cabeçalho do exercício */}
@@ -54,6 +57,24 @@ export function ExerciseBlock({
           <Lightbulb size={16} className="text-brand-500 shrink-0 mt-1" />
           <p className="text-text-primary leading-relaxed">{statement}</p>
         </div>
+      </div>
+
+      {/* Dica (opcional, antes de enviar) */}
+      <div>
+        <button
+          type="button"
+          onClick={() => setShowHint((v) => !v)}
+          className="inline-flex items-center gap-1.5 text-xs font-medium text-brand-500 hover:text-brand-400 transition-colors"
+        >
+          <Lightbulb size={14} />
+          {showHint ? 'Ocultar dica' : 'Ver dica'}
+        </button>
+        {showHint && (
+          <div className="mt-2 flex items-start gap-2 p-3 rounded-lg bg-brand-500/5 border border-brand-500/20">
+            <Lightbulb size={14} className="text-brand-500 shrink-0 mt-0.5" />
+            <p className="text-xs text-brand-300">{hint}</p>
+          </div>
+        )}
       </div>
 
       {/* Editor */}

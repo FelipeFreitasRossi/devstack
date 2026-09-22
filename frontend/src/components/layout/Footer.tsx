@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 
-const LOGO_URL = 'https://i.postimg.cc/X7RLxfVm/3.png';
+const LOGO_URL = 'https://i.postimg.cc/qRJJC8m1/Logotiporemove.png';
 
 export function Footer() {
   return (

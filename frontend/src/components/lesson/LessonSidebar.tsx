@@ -18,10 +18,8 @@ interface LessonSidebarProps {
 
 function LessonItem({
   lesson,
-  currentLessonId,
 }: {
   lesson: LessonSidebarModule['lessons'][0];
-  currentLessonId: string;
 }) {
   const isCurrent = lesson.status === 'current';
   const isCompleted = lesson.status === 'completed';
@@ -160,11 +158,7 @@ export function LessonSidebar({ sidebar, currentLessonId }: LessonSidebarProps) 
             {isOpen && !isLocked && (
               <div className="mt-1 ml-3 pl-3 border-l border-border space-y-0.5">
                 {module.lessons.map((lesson) => (
-                  <LessonItem
-                    key={lesson.id}
-                    lesson={lesson}
-                    currentLessonId={currentLessonId}
-                  />
+                  <LessonItem key={lesson.id} lesson={lesson} />
                 ))}
               </div>
             )}

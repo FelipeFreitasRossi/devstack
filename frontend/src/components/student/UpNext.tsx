@@ -1,4 +1,4 @@
-import { Play, ChevronRight, Lock, ArrowRight } from 'lucide-react';
+import { Play, ChevronRight, Lock } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useScrollAnimation } from '../../hooks/useScrollAnimation';
 import type { DashboardModule } from '../../services/api';
