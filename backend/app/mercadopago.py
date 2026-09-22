@@ -9,25 +9,16 @@ MP_API_URL = "https://api.mercadopago.com/v1/orders"
 
 
 def _is_test_credentials() -> bool:
-    """Verifica se está usando credenciais de teste."""
     return MP_ACCESS_TOKEN and MP_ACCESS_TOKEN.startswith("TEST-")
 
 
 def _get_payer_email(user: dict) -> str:
-    """Retorna o e-mail correto do pagador conforme o ambiente."""
     if _is_test_credentials():
         return "test_user_br@testuser.com"
     return user["email"]
 
 
 async def create_payment_order(user: dict, method: str) -> dict:
-    """
-    Cria uma order no Mercado Pago para o método escolhido.
-
-    Métodos suportados:
-    - pix: QR Code Pix (APENAS produção)
-    - boleto: Boleto bancário (APENAS produção)
-    """
     method_map = {
         "pix": {"id": "pix", "type": "bank_transfer"},
         "boleto": {"id": "boleto", "type": "ticket"},
@@ -70,8 +61,6 @@ async def create_payment_order(user: dict, method: str) -> dict:
             response = await client.post(MP_API_URL, json=payload, headers=headers)
 
         data = response.json()
-
-        # Log estruturado
         print(f"[MP] {method.upper()} | Status: {response.status_code} | Order: {data.get('id', 'N/A')}")
 
         return {"status_code": response.status_code, "data": data}
@@ -89,7 +78,6 @@ async def create_payment_order(user: dict, method: str) -> dict:
 
 
 async def get_order(order_id: str) -> dict:
-    """Consulta o status de uma order no Mercado Pago."""
     headers = {"Authorization": f"Bearer {MP_ACCESS_TOKEN}"}
 
     try:

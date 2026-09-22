@@ -9,16 +9,13 @@ interface User {
   paid: boolean;
 }
 
-// Cadastro que ainda NÃO está no banco: fica salvo até o pagamento ser confirmado.
-// A senha fica apenas em memória (nunca é persistida, por segurança).
 interface PendingSignup {
   name: string;
   email: string;
-  password?: string; // só em memória; some ao recarregar (é repopulada no form se faltar)
+  password?: string;
   signupToken: string;
 }
 
-// O que vai para o sessionStorage — sem a senha, por segurança
 type PersistedPendingSignup = Omit<PendingSignup, 'password'>;
 
 const PENDING_SIGNUP_KEY = 'pending_signup';
@@ -66,18 +63,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Inicializa já tentando recuperar do sessionStorage
   const [pendingSignup, setPendingSignupState] = useState<PendingSignup | null>(
     () => loadPendingSignup()
   );
 
-  // Wrapper: atualiza o state E persiste no sessionStorage (sem a senha)
   const setPendingSignup = (data: PendingSignup | null) => {
     setPendingSignupState(data);
     persistPendingSignup(data);
   };
 
-  // Restaura sessão ao carregar
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -105,8 +99,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setPendingSignup(null);
   };
 
-  // Não cria conta nem faz login: só valida os dados e guarda (senha em memória,
-  // resto em sessionStorage). A conta só existe depois do pagamento confirmado.
   const register = async (name: string, email: string, password: string) => {
     const data = (await api.register(name, email, password)) as {
       signup_token: string;
@@ -119,7 +111,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
   };
 
-  // Chamado quando o pagamento é confirmado e o backend já criou o usuário.
   const completeSignup = (data: { access_token: string; user: User }) => {
     localStorage.setItem('token', data.access_token);
     setUser(data.user);

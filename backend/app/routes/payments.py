@@ -15,25 +15,21 @@ from app.signup import (
 
 router = APIRouter()
 
-# Igual ao HTTPBearer do login, mas sem erro automático: quem está se cadastrando
-# ainda não tem login e usa o signup_token no lugar.
 optional_bearer = HTTPBearer(auto_error=False)
 
 
 class PaymentRequest(BaseModel):
     method: str
-    signup_token: Optional[str] = None  # cadastro novo, ainda não salvo no banco
+    signup_token: Optional[str] = None
 
 
 def _authenticated_user(credentials: Optional[HTTPAuthorizationCredentials]):
-    """Fluxo antigo: usuário que já existe e está logado."""
     if credentials is None:
         raise HTTPException(status_code=403, detail="Not authenticated")
     return get_current_user(credentials)
 
 
 def _signup_response(user: dict) -> dict:
-    """Login automático do usuário recém-criado (depois do pagamento)."""
     return {
         "access_token": create_access_token({"sub": user["email"]}),
         "user": {
@@ -46,7 +42,6 @@ def _signup_response(user: dict) -> dict:
 
 
 def _save_approved_order(user: dict, order_id: str, method: str) -> None:
-    """Registra o pedido aprovado (sem duplicar se for chamado de novo)."""
     now = datetime.utcnow()
     orders_collection.update_one(
         {"order_id": order_id},
@@ -65,7 +60,6 @@ def _save_approved_order(user: dict, order_id: str, method: str) -> None:
 
 
 def _extract_error_detail(result: dict) -> str:
-    """Extrai mensagem de erro amigável da resposta do Mercado Pago."""
     data = result.get("data", {})
 
     if data.get("status_detail") == "processing_error":
